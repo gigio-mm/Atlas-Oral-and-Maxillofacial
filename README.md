@@ -1,36 +1,51 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💀 Atlas Bucomaxilo
+
+## Overview
+An interactive, web-based anatomical atlas designed for academic exploration of orofacial morphology. This tool provides dentistry students and professionals with a highly visual, zero-latency way to study facial muscles and their directly associated anatomical landmarks. 
+
+Built with modern web technologies, it replaces static textbook images with dynamic, hover-triggered visual data.
+
+## Features
+* **Interactive Hover Engine:** Seamlessly reveals highlighted anatomical structures and technical data simply by hovering over the base skull image.
+* **Dynamic Display Modes:**
+  * *Standard Mode:* Uses precise delineation overlays to highlight specific structures directly on the skull.
+  * *Double Mode:* Renders a side-by-side comparative view of the isolated muscle and its corresponding skeletal landmark.
+* **Academic Precision:** Displays strictly curated data, instantly connecting muscles (e.g., Masseter, Temporal) to their specific anatomical accidents (e.g., Zygomatic Arch, Temporal Fossa).
+* **Performance Optimized:** Implements image pre-loading and pure CSS/React state transitions to guarantee fluid interactions during live classroom presentations.
+
+## Architecture
+The project follows a clean, component-based architecture focusing on separation of concerns:
+* **Data Layer (`/constants`):** Acts as an internal static database. It maps muscle IDs to their respective image paths, display modes, and technical anatomical descriptions.
+* **Presentation Layer (`/components`):** The `AnatomyViewer` handles the complex state management of image stacking, z-index manipulation, and conditional rendering based on the active muscle's display mode.
+* **Asset Management (`/public/images`):** Houses all perfectly aligned, high-resolution anatomical base images and overlays.
+
+## Tech Stack
+* **Framework:** Next.js (App Router)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS
+* **Icons:** Lucide React
 
 ## Getting Started
 
-First, run the development server:
+First, clone the repository and install the dependencies:
+
+```bash
+git clone [https://github.com/YOUR_USERNAME/atlas-bucomaxilo.git](https://github.com/YOUR_USERNAME/atlas-bucomaxilo.git)
+cd atlas-bucomaxilo
+npm install
+```
+
+Next, run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Deployment
+This application is optimized for zero-config deployment on Vercel. 
+Simply push your code to a GitHub repository, import it into Vercel, and the build will be configured automatically for Next.js.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Contact
+Developed with ☕ and 🧠 by Gigio
