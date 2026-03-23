@@ -1,5 +1,5 @@
 <p align="center">
-  <h1 align="center">💀 Atlas Bucomaxilo</h1>
+  <h1 align="center">💀 Atlas Oral-Maxillofacial</h1>
   <p align="center">
     <strong>An interactive anatomical atlas for studying orofacial muscles and their skeletal landmarks.</strong>
   </p>
@@ -16,7 +16,7 @@
 
 ## 📋 About
 
-**Atlas Bucomaxilo** is a web-based educational tool built for dentistry students and professionals who need a fast, interactive way to explore orofacial anatomy.
+**Atlas Oral-Maxillofacial** is a web-based educational tool built for dentistry students and professionals who need a fast, interactive way to explore orofacial anatomy.
 
 Traditional anatomical study relies on static textbook images that lack interactivity and immediate feedback. This atlas solves that by providing **hover-triggered visual data** — allowing users to intuitively navigate through 25+ facial muscles and instantly see their associated anatomical accidents (bony landmarks), all within a polished dark-mode interface designed for lecture halls and self-study alike.
 
