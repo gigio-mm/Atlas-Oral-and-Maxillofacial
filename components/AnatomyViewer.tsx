@@ -85,7 +85,7 @@ export default function AnatomyViewer() {
                                         src={muscle.highlightImage}
                                         alt=""
                                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain drop-shadow-[0_0_20px_rgba(255,0,0,0.4)] transition-opacity duration-300 pointer-events-none z-10 text-transparent ${isActive ? 'opacity-100' : 'opacity-0'}`}
+                                        className={`absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain drop-shadow-[0_0_20px_rgba(56,189,248,0.4)] transition-opacity duration-300 pointer-events-none z-10 text-transparent ${isActive ? 'opacity-100' : 'opacity-0'}`}
                                     />
                                 );
                             })}
@@ -107,13 +107,13 @@ export default function AnatomyViewer() {
                                 </div>
                             </div>
                             <div className="flex flex-col items-center gap-4 h-full justify-center w-full">
-                                <h3 className="text-sm font-semibold text-red-400 uppercase tracking-widest bg-red-900/20 px-4 py-1 rounded-full border border-red-500/30 shadow-[0_0_10px_rgba(255,0,0,0.2)]">Acidente</h3>
-                                <div className="bg-red-950/20 rounded-3xl p-6 w-full flex-1 flex items-center justify-center border border-red-900/30 shadow-[inset_0_0_30px_rgba(255,0,0,0.05)] transition-transform hover:scale-105 duration-300">
+                                <h3 className="text-sm font-semibold text-blue-400 uppercase tracking-widest bg-blue-900/20 px-4 py-1 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]">Acidente</h3>
+                                <div className="bg-blue-950/20 rounded-3xl p-6 w-full flex-1 flex items-center justify-center border border-blue-900/30 shadow-[inset_0_0_30px_rgba(56,189,248,0.05)] transition-transform hover:scale-105 duration-300">
                                     <img
                                         src={activeMuscle.image2}
                                         alt=""
                                         onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                                        className="block w-full h-auto max-h-[50vh] drop-shadow-[0_0_20px_rgba(255,0,0,0.3)] object-contain text-transparent"
+                                        className="block w-full h-auto max-h-[50vh] drop-shadow-[0_0_20px_rgba(56,189,248,0.3)] object-contain text-transparent"
                                     />
                                 </div>
                             </div>
@@ -140,11 +140,11 @@ export default function AnatomyViewer() {
                                     // facilitando a leitura e a visão das imagens duplas.
                                     className={`w-full text-left px-6 py-4 transition-all duration-300 group flex items-center justify-between
                                         ${activeMuscle?.id === muscle.id
-                                            ? 'bg-red-500/10 border-l-4 border-red-500 shrink-0'
+                                            ? 'bg-blue-500/10 border-l-4 border-blue-500 shrink-0'
                                             : 'hover:bg-slate-800/80 border-l-4 border-transparent shrink-0'
                                         }`}
                                 >
-                                    <span className={`font-medium transition-colors line-clamp-2 pr-2 ${activeMuscle?.id === muscle.id ? 'text-red-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
+                                    <span className={`font-medium transition-colors line-clamp-2 pr-2 ${activeMuscle?.id === muscle.id ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'}`}>
                                         {muscle.name}
                                     </span>
                                     <span className={`px-2 py-1 text-[0.6rem] uppercase font-bold tracking-widest rounded-md border shrink-0 ${muscle.displayMode === 'double' ? 'border-purple-500/30 text-purple-400 bg-purple-500/10' : 'border-blue-500/30 text-blue-400 bg-blue-500/10'
@@ -166,10 +166,10 @@ export default function AnatomyViewer() {
                             </h2>
 
                             <div className="space-y-4">
-                                <div className="bg-slate-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-700/50 transition-all hover:border-red-500/30">
-                                    <div className="flex items-center gap-2 text-red-500 mb-3">
+                                <div className="bg-slate-900/80 backdrop-blur-sm p-6 rounded-2xl shadow-lg border border-slate-700/50 transition-all hover:border-blue-500/30">
+                                    <div className="flex items-center gap-2 text-blue-500 mb-3">
                                         <Target className="w-5 h-5" />
-                                        <h3 className="text-xs font-bold uppercase tracking-widest text-red-500/80">Acidente Anatômico</h3>
+                                        <h3 className="text-xs font-bold uppercase tracking-widest text-blue-500/80">Acidente Anatômico</h3>
                                     </div>
                                     <h4 className="text-md font-semibold text-slate-100 leading-relaxed">
                                         {activeMuscle.anatomicalAccident.title}
