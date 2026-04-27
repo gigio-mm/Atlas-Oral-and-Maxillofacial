@@ -91,9 +91,9 @@ export const muscleData: Muscle[] = [
     {
         id: 'elevador-do-angulo-da-boca',
         name: 'Músculo Elevador do Ângulo da Boca',
-        displayMode: 'double',
-        image1: '/images/musculo-elevador-do-angulo-da-boca.png',
-        image2: '/images/fossas-caninas.png',
+        displayMode: 'standard',
+        baseImage: '/images/cranio-masseter-base.png',
+        highlightImage: '/images/musculo-elevador-do-angulo-da-boca.png',
         anatomicalAccident: { title: 'Fossa canina' },
     },
     // 10. Músculo Nasal
@@ -114,7 +114,25 @@ export const muscleData: Muscle[] = [
         highlightImage: '/images/musculo-depressor-do-septo-nasal.png',
         anatomicalAccident: { title: 'Espinha nasal anterior' },
     },
-    // 12. Músculo Bucinador
+    // 12. Músculo Depressor do Lábio Inferior
+    {
+        id: 'depressor-do-labio-inferior',
+        name: 'Músculo depressor do lábio inferior',
+        displayMode: 'standard',
+        baseImage: '/images/cranio-masseter-base.png',
+        highlightImage: '/images/musculo-depressor-do-labio-inferior.png',
+        anatomicalAccident: { title: 'Borda inferior da mandíbula' },
+    },
+    // 13. Músculo Depressor do Ângulo da Boca
+    {
+        id: 'depressor-do-angulo-da-boca',
+        name: 'Músculo depressor do ângulo da boca',
+        displayMode: 'standard',
+        baseImage: '/images/cranio-masseter-base.png',
+        highlightImage: '/images/musculo-depressor-do-angulo-da-boca.png',
+        anatomicalAccident: { title: 'Borda inferior da mandíbula' },
+    },
+    // 14. Músculo Bucinador
     {
         id: 'bucinador',
         name: 'Músculo Bucinador',
@@ -123,7 +141,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/processos-alveolares-dos-molares-da-maxila-e-da-mandibula.png',
         anatomicalAccident: { title: 'Processos alveolares dos molares da maxila e da mandíbula' },
     },
-    // 13. Músculo da Úvula
+    // 15. Músculo da Úvula
     {
         id: 'uvula',
         name: 'Músculo da Úvula',
@@ -132,7 +150,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/espinha-nasal-posterior.png',
         anatomicalAccident: { title: 'Espinha nasal posterior' },
     },
-    // 14. Músculo Geniohioideo
+    // 16. Músculo Geniohioideo
     {
         id: 'geniohioideo',
         name: 'Músculo Geniohioideo',
@@ -141,16 +159,16 @@ export const muscleData: Muscle[] = [
         image2: '/images/espinhas-genianas.png',
         anatomicalAccident: { title: 'Espinhas genianas' },
     },
-    // 15. Músculo Milohioideo
+    // 17. Músculo Milohioideo
     {
         id: 'milohioideo',
         name: 'Músculo Milohioideo',
-        displayMode: 'standard',
-        baseImage: '/images/cranio-masseter-base.png',
-        highlightImage: '/images/milohioideo.png',
-        anatomicalAccident: { title: 'Corpo do osso hiode' },
+        displayMode: 'double',
+        image1: '/images/milohioideo.png',
+        image2: '/images/linha-milohioidea.png',
+        anatomicalAccident: { title: 'Linha milohioidea' },
     },
-    // 16. Porção Superior do Músculo Pterigoideo Lateral
+    // 18. Porção Superior do Músculo Pterigoideo Lateral
     {
         id: 'porcao-superior-do-musculo-pterigoideo-lateral',
         name: 'Porção Superior do Músculo Pterigoideo Lateral',
@@ -159,16 +177,16 @@ export const muscleData: Muscle[] = [
         image2: '/images/crista-infratemporal.png',
         anatomicalAccident: { title: 'Crista infratemporal' },
     },
-    // 17. Porção Inferior do Músculo Pterigoideo Lateral
+    // 19. Porção Inferior do Músculo Pterigoideo Lateral
     {
         id: 'porcao-inferior-do-musculo-pterigoideo-lateral',
         name: 'Porção Inferior do Músculo Pterigoideo Lateral',
-        displayMode: 'standard',
-        baseImage: '/images/cranio-masseter-base.png',
-        highlightImage: '/images/musculo-porcao-inferior-do-musculo-pterigoideo-lateral.png',
+        displayMode: 'double',
+        image1: '/images/musculo-porcao-inferior-do-musculo-pterigoideo-lateral.png',
+        image2: '/images/lamina-lateral-do-processo-pterigoide.png',
         anatomicalAccident: { title: 'Lâmina lateral do processo pterigoideo' },
     },
-    // 16. Músculo Pterigoideo Medial
+    // 20. Músculo Pterigoideo Medial
     {
         id: 'pterigoideo-medial',
         name: 'Músculo Pterigoideo Medial',
@@ -177,7 +195,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/fossa-pterigoidea.png',
         anatomicalAccident: { title: 'Fossa pterigoidea' },
     },
-    // 17. Músculo Tensor do Véu Palatino (consolidado)
+    // 21. Músculo Tensor do Véu Palatino (consolidado)
     {
         id: 'tensor-do-veu-palatino',
         name: 'Músculo Tensor do Véu Palatino',
@@ -186,7 +204,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/fossa-escafoide-e-hamulo-pterigoideo.png',
         anatomicalAccident: { title: 'Fossa escafoide e hâmulo pterigoideo' },
     },
-    // 18. Músculo Estiloglosso
+    // 22. Músculo Estiloglosso
     {
         id: 'estiloglosso',
         name: 'Músculo Estiloglosso',
@@ -195,7 +213,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/processo-estiloide.png',
         anatomicalAccident: { title: 'Processo estiloide' },
     },
-    // 19. Músculo Estilohioideo
+    // 23. Músculo Estilohioideo
     {
         id: 'estilohioideo',
         name: 'Músculo Estilohioideo',
@@ -204,7 +222,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/processo-estiloide.png',
         anatomicalAccident: { title: 'Processo estiloide' },
     },
-    // 20. Músculo Esternocleidomastoideo
+    // 24. Músculo Esternocleidomastoideo
     {
         id: 'esternocleidomastoideo',
         name: 'Músculo Esternocleidomastoideo',
@@ -213,7 +231,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/processo-mastoide.png',
         anatomicalAccident: { title: 'Processo mastoide' },
     },
-    // 21. Ventre Anterior do Músculo Digástrico
+    // 25. Ventre Anterior do Músculo Digástrico
     {
         id: 'ventre-anterior-do-musculo-digastrico',
         name: 'Ventre Anterior do Músculo Digástrico',
@@ -222,7 +240,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/fossas-digastricas.png',
         anatomicalAccident: { title: 'Fossas digástricas' },
     },
-    // 22. Ventre Posterior do Músculo Digástrico
+    // 26. Ventre Posterior do Músculo Digástrico
     {
         id: 'ventre-posterior-do-musculo-digastrico',
         name: 'Ventre Posterior do Músculo Digástrico',
@@ -231,7 +249,7 @@ export const muscleData: Muscle[] = [
         image2: '/images/incisura-mastoide.png',
         anatomicalAccident: { title: 'Incisura mastoide' },
     },
-    // 23. Músculo Elevador do Véu Palatino
+    // 27. Músculo Elevador do Véu Palatino
     {
         id: 'elevador-do-veu-palatino',
         name: 'Músculo Elevador do Véu Palatino',
