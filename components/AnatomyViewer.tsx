@@ -4,6 +4,95 @@ import React, { useState, useEffect, useCallback, useRef } from 'react';
 import { Info, Target, ChevronUp, ChevronDown, X } from 'lucide-react';
 import { muscleData, Muscle } from '@/constants/muscleData';
 
+// ══════════════════════════════════════════════════════════════
+// ── Hook: Preloader agressivo de imagens ──
+// Força o download e cache de TODAS as imagens do muscleData
+// em background, independente do estado de loading da UI.
+// ══════════════════════════════════════════════════════════════
+function useImagePreloader(muscles: Muscle[]) {
+    const [isLoading, setIsLoading] = useState(true);
+
+    useEffect(() => {
+        if (typeof window === 'undefined') return;
+
+        // ── 1. Coletar TODAS as URLs de imagem (deduplicadas) ──
+        const allUrls = muscles.flatMap((m) => {
+            if (m.displayMode === 'standard') {
+                return [m.baseImage, m.highlightImage];
+            } else {
+                return [m.image1, m.image2];
+            }
+        }).filter(Boolean) as string[];
+
+        const uniqueUrls = [...new Set(allUrls)];
+
+        if (uniqueUrls.length === 0) {
+            setIsLoading(false);
+            return;
+        }
+
+        // ── 2. Injetar <link rel="prefetch"> no <head> ──
+        // Isso instrui o browser a baixar os assets com prioridade
+        // baixa em background, antes mesmo do new Image().
+        const linkElements: HTMLLinkElement[] = [];
+        uniqueUrls.forEach((url) => {
+            const link = document.createElement('link');
+            link.rel = 'prefetch';
+            link.as = 'image';
+            link.href = url;
+            document.head.appendChild(link);
+            linkElements.push(link);
+        });
+
+        // ── 3. Preload agressivo via new Image() ──
+        // Dispara downloads imediatos e rastreia progresso.
+        let loadedCount = 0;
+        const totalImages = uniqueUrls.length;
+
+        // Timeout de segurança: não bloquear a UI por mais de 5s
+        const safetyTimeout = setTimeout(() => {
+            setIsLoading(false);
+        }, 5000);
+
+        const onImageSettled = () => {
+            loadedCount++;
+            if (loadedCount >= totalImages) {
+                setIsLoading(false);
+                clearTimeout(safetyTimeout);
+            }
+        };
+
+        // Manter referências para evitar garbage collection prematura
+        const imageRefs: HTMLImageElement[] = [];
+
+        uniqueUrls.forEach((src) => {
+            const img = new window.Image();
+            // Dica de prioridade alta para o browser
+            if ('fetchPriority' in img) {
+                (img as any).fetchPriority = 'high';
+            }
+            img.decoding = 'async';
+            img.onload = onImageSettled;
+            img.onerror = onImageSettled;
+            img.src = src;
+            imageRefs.push(img);
+        });
+
+        // Cleanup
+        return () => {
+            clearTimeout(safetyTimeout);
+            // Remover os <link prefetch> do DOM
+            linkElements.forEach((link) => {
+                if (link.parentNode) {
+                    link.parentNode.removeChild(link);
+                }
+            });
+        };
+    }, [muscles]);
+
+    return isLoading;
+}
+
 // ── Hook para detectar breakpoint ──
 function useBreakpoint() {
     const [bp, setBp] = useState<'mobile' | 'tablet' | 'desktop'>('desktop');
@@ -25,7 +114,7 @@ function useBreakpoint() {
 
 export default function AnatomyViewer() {
     const [activeMuscle, setActiveMuscle] = useState<Muscle | null>(null);
-    const [isLoading, setIsLoading] = useState(true);
+    const isLoading = useImagePreloader(muscleData);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const drawerRef = useRef<HTMLDivElement>(null);
     const bp = useBreakpoint();
@@ -33,51 +122,6 @@ export default function AnatomyViewer() {
     const isMobile = bp === 'mobile';
     const isTablet = bp === 'tablet';
     const isDesktop = bp === 'desktop';
-
-    // ── Pre-loading de imagens ──
-    useEffect(() => {
-        const imagesToPreload = muscleData.flatMap((m) => {
-            if (m.displayMode === 'standard') {
-                return [m.baseImage, m.highlightImage];
-            } else {
-                return [m.image1, m.image2];
-            }
-        }).filter(Boolean) as string[];
-
-        const fallbackTimeout = setTimeout(() => {
-            setIsLoading(false);
-        }, 3000);
-
-        let loadedCount = 0;
-        if (imagesToPreload.length === 0) {
-            setIsLoading(false);
-            clearTimeout(fallbackTimeout);
-            return;
-        }
-
-        const validImages = [...new Set(imagesToPreload)];
-
-        validImages.forEach((src) => {
-            const img = new window.Image();
-            img.src = src;
-            img.onload = () => {
-                loadedCount++;
-                if (loadedCount >= validImages.length) {
-                    setIsLoading(false);
-                    clearTimeout(fallbackTimeout);
-                }
-            };
-            img.onerror = () => {
-                loadedCount++;
-                if (loadedCount >= validImages.length) {
-                    setIsLoading(false);
-                    clearTimeout(fallbackTimeout);
-                }
-            };
-        });
-
-        return () => clearTimeout(fallbackTimeout);
-    }, []);
 
     // ── Travar/destravar scroll do body quando drawer abre/fecha ──
     useEffect(() => {
