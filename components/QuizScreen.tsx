@@ -119,7 +119,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
     const renderQuestionImage = (muscle: Muscle) => {
         if (muscle.displayMode === 'standard') {
             return (
-                <div className="relative w-full h-full flex items-center justify-center">
+                <div key={muscle.id} className="relative w-full h-full flex items-center justify-center">
                     <img
                         src={muscle.baseImage || '/images/cranio-masseter-base.png'}
                         alt=""
@@ -128,6 +128,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     />
                     {muscle.highlightImage && (
                         <img
+                            key={`highlight-${muscle.id}`}
                             src={muscle.highlightImage}
                             alt=""
                             onError={(e) => { e.currentTarget.style.display = 'none'; }}
@@ -140,7 +141,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
 
         // Double mode: side by side
         return (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 w-full items-center">
+            <div key={muscle.id} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 w-full items-center">
                 <div className="flex flex-col items-center gap-2">
                     <h3 className="text-[0.6rem] sm:text-xs font-semibold text-slate-400 uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700/50">
                         Músculo
