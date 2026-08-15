@@ -11,7 +11,8 @@ function normalize(text: string): string {
         .replace(/[\u0300-\u036f]/g, '')
         .toLowerCase()
         .trim()
-        .replace(/\s+/g, ' ');
+        .replace(/\s+/g, ' ')
+        .replace(/\bporcao\b/g, 'parte');
 }
 
 // ── Remove a palavra "musculo" de qualquer posição do texto normalizado ──
