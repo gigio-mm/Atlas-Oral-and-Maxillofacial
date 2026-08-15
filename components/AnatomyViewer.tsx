@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Info, Target, ChevronUp, ChevronDown, X } from 'lucide-react';
+import { Info, Target, ChevronUp, ChevronDown, X, Home } from 'lucide-react';
 import { muscleData, Muscle } from '@/constants/muscleData';
 
 // ══════════════════════════════════════════════════════════════
@@ -112,7 +112,11 @@ function useBreakpoint() {
     return bp;
 }
 
-export default function AnatomyViewer() {
+interface AnatomyViewerProps {
+    onBackToCover?: () => void;
+}
+
+export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}) {
     const [activeMuscle, setActiveMuscle] = useState<Muscle | null>(null);
     const isLoading = useImagePreloader(muscleData);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
@@ -334,6 +338,15 @@ export default function AnatomyViewer() {
                     <div>
                         <h1 className="text-lg font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
                     </div>
+                    {onBackToCover && (
+                        <button
+                            onClick={onBackToCover}
+                            className="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-slate-800/80 border border-slate-700/60 transition-colors"
+                        >
+                            <Home className="w-3.5 h-3.5 text-blue-400" />
+                            <span>Capa</span>
+                        </button>
+                    )}
                 </header>
 
                 {/* Viewer — ocupa o espaço central */}
@@ -412,9 +425,21 @@ export default function AnatomyViewer() {
 
                 {/* Sidebar estreita para tablet */}
                 <aside className="w-72 bg-slate-900 border-l border-slate-800/60 flex flex-col shadow-2xl z-20">
-                    <header className="px-5 py-5 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md shrink-0">
-                        <h1 className="text-xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
-                        <p className="text-xs text-slate-500 mt-1">Exploração Acadêmica</p>
+                    <header className="px-5 py-5 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md shrink-0 flex items-center justify-between">
+                        <div>
+                            <h1 className="text-xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
+                            <p className="text-xs text-slate-500 mt-1">Exploração Acadêmica</p>
+                        </div>
+                        {onBackToCover && (
+                            <button
+                                onClick={onBackToCover}
+                                title="Voltar para a Capa"
+                                className="text-xs text-slate-300 hover:text-white flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:bg-slate-700 transition-colors"
+                            >
+                                <Home className="w-3.5 h-3.5 text-blue-400" />
+                                <span>Capa</span>
+                            </button>
+                        )}
                     </header>
 
                     {/* Lista de músculos */}
@@ -450,9 +475,21 @@ export default function AnatomyViewer() {
 
             {/* Painel Lateral Elegante (Dark Mode) */}
             <aside className="w-96 bg-slate-900 border-l border-slate-800/60 flex flex-col shadow-2xl z-20">
-                <header className="px-6 py-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md">
-                    <h1 className="text-2xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
-                    <p className="text-sm text-slate-500 mt-1">Exploração Acadêmica e Estrutural</p>
+                <header className="px-6 py-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between">
+                    <div>
+                        <h1 className="text-2xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
+                        <p className="text-sm text-slate-500 mt-1">Exploração Acadêmica e Estrutural</p>
+                    </div>
+                    {onBackToCover && (
+                        <button
+                            onClick={onBackToCover}
+                            title="Voltar para a Capa"
+                            className="text-xs font-medium text-slate-300 hover:text-white flex items-center gap-2 px-3.5 py-2 rounded-xl bg-slate-800/80 border border-slate-700/60 hover:bg-slate-700 transition-colors"
+                        >
+                            <Home className="w-4 h-4 text-blue-400" />
+                            <span>Capa</span>
+                        </button>
+                    )}
                 </header>
 
                 {/* Lista de Músculos */}
