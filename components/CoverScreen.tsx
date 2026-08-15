@@ -21,7 +21,7 @@ export default function CoverScreen({ onStart }: CoverScreenProps) {
         {/* Main Title & Description */}
         <div className="space-y-3 max-w-2xl">
           <h1 className="text-2xl sm:text-4xl md:text-5xl font-extrabold tracking-tight text-white leading-tight">
-            Guia Interativo de Anatomia
+            Roteiro prático de crânio e suas estruturas associadas
           </h1>
           <p className="text-sm sm:text-base text-slate-400 leading-relaxed px-2">
             Músculos e acidentes anatômicos da região bucomaxilofacial para estudo e consulta acadêmica.

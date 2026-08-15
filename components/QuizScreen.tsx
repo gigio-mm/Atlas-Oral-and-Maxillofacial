@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useMemo, useRef } from 'react';
-import { Check, X, ArrowRight, Send } from 'lucide-react';
+import { Check, X, ArrowRight, Send, Target } from 'lucide-react';
 import { muscleData, Muscle } from '@/constants/muscleData';
+import ImageZoomModal from './ImageZoomModal';
 
 // ── Normaliza texto para comparação: remove acentos, lowercase, trim ──
 function normalize(text: string): string {
@@ -66,6 +67,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
     const [muscleCorrect, setMuscleCorrect] = useState(false);
     const [accidentCorrect, setAccidentCorrect] = useState(false);
     const [results, setResults] = useState<QuestionResult[]>([]);
+    const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
     const isTransitioning = useRef(false);
 
     const currentQuestion = questions[currentIndex];
@@ -197,7 +199,14 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
             {/* Main content — scrollable */}
             <main className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
                 {/* Image viewer */}
-                <div className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex items-center justify-center transition-all duration-300">
+                <div 
+                    className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/30 cursor-pointer relative group"
+                    onClick={() => setIsZoomModalOpen(true)}
+                    title="Clique para ampliar"
+                >
+                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[0.65rem] uppercase tracking-widest text-white/40 font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
+                        <Target size={12} /> Clique para ampliar
+                    </div>
                     {renderQuestionImage(currentQuestion)}
                 </div>
 
@@ -292,6 +301,11 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     )}
                 </div>
             </main>
+            <ImageZoomModal 
+                isOpen={isZoomModalOpen} 
+                onClose={() => setIsZoomModalOpen(false)} 
+                muscle={currentQuestion} 
+            />
         </div>
     );
 }

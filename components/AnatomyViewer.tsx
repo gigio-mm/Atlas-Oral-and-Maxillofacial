@@ -117,7 +117,7 @@ interface AnatomyViewerProps {
 }
 
 export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}) {
-    const [activeMuscle, setActiveMuscle] = useState<Muscle | null>(null);
+    const [activeMuscle, setActiveMuscle] = useState<Muscle | null>(muscleData[0]);
     const isLoading = useImagePreloader(muscleData);
     const [isDrawerOpen, setIsDrawerOpen] = useState(false);
     const drawerRef = useRef<HTMLDivElement>(null);
