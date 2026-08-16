@@ -5,12 +5,18 @@ import AnatomyViewer from '@/components/AnatomyViewer';
 import CoverScreen from '@/components/CoverScreen';
 import QuizScreen from '@/components/QuizScreen';
 import QuizFeedback from '@/components/QuizFeedback';
+import QuizReview from '@/components/QuizReview';
 
-type AppScreen = 'cover' | 'quiz' | 'feedback' | 'atlas';
+type AppScreen = 'cover' | 'quiz' | 'feedback' | 'review' | 'atlas';
 
 interface QuestionResult {
   muscleCorrect: boolean;
   accidentCorrect: boolean;
+  userMuscleAnswer: string;
+  userAccidentAnswer: string;
+  correctMuscleName: string;
+  correctAccidentName: string;
+  muscleId: string;
 }
 
 export default function Home() {
@@ -37,6 +43,17 @@ export default function Home() {
       <QuizFeedback
         results={quizResults}
         onGoToAtlas={() => setScreen('atlas')}
+        onReview={() => setScreen('review')}
+      />
+    );
+  }
+
+  if (screen === 'review') {
+    return (
+      <QuizReview
+        results={quizResults}
+        onGoToAtlas={() => setScreen('atlas')}
+        onBackToFeedback={() => setScreen('feedback')}
       />
     );
   }

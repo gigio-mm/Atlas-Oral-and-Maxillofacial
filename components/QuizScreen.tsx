@@ -44,12 +44,24 @@ function flexMatch(userAnswer: string, correctAnswer: string): boolean {
     // O aluno digitou com prefixo diferente mas o core é igual
     if (aStripped === b) return true;
 
+    // Match com partes em ordem invertida (ex: "hamulo pterigoideo e fossa escafoide" == "fossa escafoide e hamulo pterigoideo")
+    if (aStripped.includes(' e ') && bStripped.includes(' e ')) {
+        const aParts = aStripped.split(' e ').map(p => p.trim()).sort();
+        const bParts = bStripped.split(' e ').map(p => p.trim()).sort();
+        if (aParts.length === bParts.length && aParts.every((part, i) => part === bParts[i])) return true;
+    }
+
     return false;
 }
 
 interface QuestionResult {
     muscleCorrect: boolean;
     accidentCorrect: boolean;
+    userMuscleAnswer: string;
+    userAccidentAnswer: string;
+    correctMuscleName: string;
+    correctAccidentName: string;
+    muscleId: string;
 }
 
 interface QuizScreenProps {
@@ -84,7 +96,15 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
         setMuscleCorrect(mCorrect);
         setAccidentCorrect(aCorrect);
         setHasSubmitted(true);
-        setResults(prev => [...prev, { muscleCorrect: mCorrect, accidentCorrect: aCorrect }]);
+        setResults(prev => [...prev, {
+            muscleCorrect: mCorrect,
+            accidentCorrect: aCorrect,
+            userMuscleAnswer: muscleAnswer.trim(),
+            userAccidentAnswer: accidentAnswer.trim(),
+            correctMuscleName: currentQuestion.name,
+            correctAccidentName: currentQuestion.anatomicalAccident.title,
+            muscleId: currentQuestion.id,
+        }]);
     };
 
     const handleNext = () => {

@@ -6,14 +6,20 @@ import { Trophy, Target, Brain, ArrowRight, AlertTriangle, CheckCircle2, BookOpe
 interface QuestionResult {
     muscleCorrect: boolean;
     accidentCorrect: boolean;
+    userMuscleAnswer: string;
+    userAccidentAnswer: string;
+    correctMuscleName: string;
+    correctAccidentName: string;
+    muscleId: string;
 }
 
 interface QuizFeedbackProps {
     results: QuestionResult[];
     onGoToAtlas: () => void;
+    onReview: () => void;
 }
 
-export default function QuizFeedback({ results, onGoToAtlas }: QuizFeedbackProps) {
+export default function QuizFeedback({ results, onGoToAtlas, onReview }: QuizFeedbackProps) {
     const total = results.length;
     const musclesCorrect = results.filter(r => r.muscleCorrect).length;
     const accidentsCorrect = results.filter(r => r.accidentCorrect).length;
@@ -166,15 +172,23 @@ export default function QuizFeedback({ results, onGoToAtlas }: QuizFeedbackProps
                     </div>
                 </div>
 
-                {/* Go to Atlas button */}
-                <button
-                    onClick={onGoToAtlas}
-                    className="group inline-flex items-center justify-center gap-3 px-8 py-4 text-base sm:text-lg font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
-                >
-                    <BookOpen className="w-5 h-5 text-blue-200" />
-                    <span>Ir para o Guia Atlas</span>
-                    <ArrowRight className="w-5 h-5 transition-transform duration-300 group-hover:translate-x-1" />
-                </button>
+                {/* Action buttons */}
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-lg">
+                    <button
+                        onClick={onReview}
+                        className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 px-8 py-4 text-sm sm:text-base font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition-all duration-300 rounded-full border border-slate-700/60 hover:border-slate-600 shadow-lg cursor-pointer"
+                    >
+                        <BookOpen className="w-5 h-5 text-slate-400" />
+                        <span>Revisar Prova</span>
+                    </button>
+                    <button
+                        onClick={onGoToAtlas}
+                        className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 px-8 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                    >
+                        <ArrowRight className="w-5 h-5 text-blue-200" />
+                        <span>Ir para o Guia Atlas</span>
+                    </button>
+                </div>
             </main>
         </div>
     );
