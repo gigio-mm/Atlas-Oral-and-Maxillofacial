@@ -1,8 +1,9 @@
 'use client';
 
 import React, { useState, useEffect, useCallback, useRef } from 'react';
-import { Info, Target, ChevronUp, ChevronDown, X, Home } from 'lucide-react';
+import { ChevronUp, X, Home } from 'lucide-react';
 import { muscleData, Muscle } from '@/constants/muscleData';
+import MuscleInfoCard from '@/components/MuscleInfoCard';
 
 // ══════════════════════════════════════════════════════════════
 // ── Hook: Preloader agressivo de imagens ──
@@ -145,6 +146,13 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
         }
     }, [isMobile]);
 
+    // ── Texto de dica contextual por breakpoint ──
+    const contextHint = isMobile
+        ? 'Toque em "Selecionar Músculo" para explorar.'
+        : isTablet
+            ? 'Toque em um músculo na lista para ver o acidente anatômico.'
+            : 'Passe o mouse sobre um músculo para ver o acidente anatômico associado.';
+
     // ── Renderização do Viewer de imagem ──
     const renderViewer = () => (
         <div className={`relative flex items-center justify-center w-full bg-white/5 backdrop-blur-3xl border border-white/10 transition-all duration-500 hover:border-white/50 hover:bg-white/10 hover:shadow-[0_0_40px_rgba(255,255,255,0.15)] group
@@ -189,7 +197,7 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
                     <div className={`flex flex-col items-center gap-3 w-full
                         ${isMobile ? '' : 'h-full justify-center'}`}
                     >
-                        <h3 className={`font-semibold text-slate-300 uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700/50 shadow-inner
+                        <h3 className={`font-heading font-semibold text-slate-300 uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700/50 shadow-inner
                             ${isMobile ? 'text-[0.6rem]' : 'text-sm'}`}
                         >Músculo</h3>
                         <div className={`bg-slate-900/40 rounded-2xl w-full flex items-center justify-center border border-slate-800/80 shadow-2xl backdrop-blur-sm transition-transform hover:scale-105 duration-300
@@ -207,7 +215,7 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
                     <div className={`flex flex-col items-center gap-3 w-full
                         ${isMobile ? '' : 'h-full justify-center'}`}
                     >
-                        <h3 className={`font-semibold text-blue-400 uppercase tracking-widest bg-blue-900/20 px-3 py-1 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]
+                        <h3 className={`font-heading font-semibold text-blue-400 uppercase tracking-widest bg-blue-900/20 px-3 py-1 rounded-full border border-blue-500/30 shadow-[0_0_10px_rgba(56,189,248,0.2)]
                             ${isMobile ? 'text-[0.6rem]' : 'text-sm'}`}
                         >Acidente</h3>
                         <div className={`bg-blue-950/20 w-full flex items-center justify-center border border-blue-900/30 shadow-[inset_0_0_30px_rgba(56,189,248,0.05)] transition-transform hover:scale-105 duration-300
@@ -244,7 +252,7 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
                             }
                             ${isMobile ? 'px-4 py-3' : ''}`}
                     >
-                        <span className={`font-medium transition-colors line-clamp-2 pr-2
+                        <span className={`font-sans font-medium transition-colors line-clamp-2 pr-2
                             ${isMobile ? 'text-sm' : ''}
                             ${activeMuscle?.id === muscle.id ? 'text-blue-400' : 'text-slate-400 group-hover:text-slate-200'}`}
                         >
@@ -264,62 +272,6 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
         </ul>
     );
 
-    // ── Info do músculo ativo ──
-    const renderMuscleInfo = (compact = false) => {
-        if (activeMuscle) {
-            return (
-                <div className={`animate-in fade-in slide-in-from-bottom-4 duration-300
-                    ${compact ? '' : ''}`}
-                >
-                    <h2 className={`font-semibold text-slate-200 flex items-center gap-2
-                        ${compact ? 'text-sm mb-2' : 'text-lg mb-4'}`}
-                    >
-                        {activeMuscle.name}
-                    </h2>
-
-                    <div className={`bg-slate-900/80 backdrop-blur-sm rounded-2xl shadow-lg border border-slate-700/50 transition-all hover:border-blue-500/30
-                        ${compact ? 'p-4 rounded-xl' : 'p-6'}`}
-                    >
-                        <div className={`flex items-center gap-2 text-blue-500
-                            ${compact ? 'mb-2' : 'mb-3'}`}
-                        >
-                            <Target className={compact ? 'w-4 h-4' : 'w-5 h-5'} />
-                            <h3 className={`font-bold uppercase tracking-widest text-blue-500/80
-                                ${compact ? 'text-[0.6rem]' : 'text-xs'}`}
-                            >Acidente Anatômico</h3>
-                        </div>
-                        <h4 className={`font-semibold text-slate-100 leading-relaxed
-                            ${compact ? 'text-sm' : 'text-md'}`}
-                        >
-                            {activeMuscle.anatomicalAccident.title}
-                        </h4>
-                    </div>
-                </div>
-            );
-        }
-
-        return (
-            <div className={`flex flex-col items-center justify-center text-center text-slate-500 animate-in fade-in duration-300
-                ${compact ? 'p-2' : 'p-4'}`}
-            >
-                <div className={`mb-3 rounded-full bg-slate-900 border border-slate-800 flex items-center justify-center shadow-inner
-                    ${compact ? 'w-10 h-10' : 'w-16 h-16 mb-4'}`}
-                >
-                    <Info className={compact ? 'w-5 h-5 text-slate-600' : 'w-8 h-8 text-slate-600'} />
-                </div>
-                <p className={`font-medium text-slate-400 leading-relaxed
-                    ${compact ? 'text-xs' : 'text-sm'}`}
-                >
-                    {isMobile
-                        ? 'Toque em "Selecionar Músculo" para explorar.'
-                        : isTablet
-                            ? 'Toque em um músculo na lista para ver o acidente anatômico.'
-                            : 'Passe o mouse sobre um músculo para ver o acidente anatômico associado.'}
-                </p>
-            </div>
-        );
-    };
-
     // ══════════════════════════════════════════════
     // ── MOBILE LAYOUT ──
     // ══════════════════════════════════════════════
@@ -336,7 +288,7 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
                 {/* Header compacto */}
                 <header className="px-4 py-3 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between shrink-0 safe-area-top">
                     <div>
-                        <h1 className="text-lg font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
+                        <h1 className="text-lg font-heading tracking-tight text-slate-300">Atlas <span className="font-bold text-slate-100">Bucomaxilo</span></h1>
                     </div>
                     {onBackToCover && (
                         <button
@@ -351,12 +303,18 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
 
                 {/* Viewer — ocupa o espaço central */}
                 <main className="flex-1 relative flex items-center justify-center p-3 bg-[radial-gradient(ellipse_at_center,_var(--tw-gradient-stops))] from-slate-800 to-slate-950 overflow-hidden min-h-0">
-                    {renderViewer()}
+                    <div className="w-full max-w-lg mx-auto">
+                        {renderViewer()}
+                    </div>
                 </main>
 
                 {/* Card flutuante compacto de info */}
                 <div className="shrink-0 px-3 py-2 bg-slate-950 border-t border-slate-800/50">
-                    {renderMuscleInfo(true)}
+                    <MuscleInfoCard
+                        muscle={activeMuscle}
+                        compact={true}
+                        contextHint={contextHint}
+                    />
                 </div>
 
                 {/* Botão para abrir drawer */}
@@ -427,8 +385,8 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
                 <aside className="w-72 bg-slate-900 border-l border-slate-800/60 flex flex-col shadow-2xl z-20">
                     <header className="px-5 py-5 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md shrink-0 flex items-center justify-between">
                         <div>
-                            <h1 className="text-xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
-                            <p className="text-xs text-slate-500 mt-1">Exploração Acadêmica</p>
+                            <h1 className="text-xl font-heading tracking-tight text-slate-300">Atlas <span className="font-bold text-slate-100">Bucomaxilo</span></h1>
+                            <p className="text-xs text-slate-500 mt-1 font-sans">Exploração Acadêmica</p>
                         </div>
                         {onBackToCover && (
                             <button
@@ -449,7 +407,11 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
 
                     {/* Info do músculo */}
                     <div className="p-4 bg-slate-950 min-h-[30%] flex flex-col justify-center border-t border-slate-900 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-30">
-                        {renderMuscleInfo(false)}
+                        <MuscleInfoCard
+                            muscle={activeMuscle}
+                            compact={false}
+                            contextHint={contextHint}
+                        />
                     </div>
                 </aside>
             </div>
@@ -457,7 +419,7 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
     }
 
     // ══════════════════════════════════════════════
-    // ── DESKTOP LAYOUT (original) ──
+    // ── DESKTOP LAYOUT ──
     // ══════════════════════════════════════════════
     return (
         <div className="flex flex-row h-screen bg-slate-950 text-slate-200 font-sans overflow-hidden">
@@ -477,8 +439,8 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
             <aside className="w-96 bg-slate-900 border-l border-slate-800/60 flex flex-col shadow-2xl z-20">
                 <header className="px-6 py-8 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md flex items-center justify-between">
                     <div>
-                        <h1 className="text-2xl font-light tracking-tight text-slate-300">Atlas <span className="font-semibold text-slate-100">Bucomaxilo</span></h1>
-                        <p className="text-sm text-slate-500 mt-1">Exploração Acadêmica e Estrutural</p>
+                        <h1 className="text-2xl font-heading tracking-tight text-slate-300">Atlas <span className="font-bold text-slate-100">Bucomaxilo</span></h1>
+                        <p className="text-sm text-slate-500 mt-1 font-sans">Exploração Acadêmica e Estrutural</p>
                     </div>
                     {onBackToCover && (
                         <button
@@ -499,7 +461,11 @@ export default function AnatomyViewer({ onBackToCover }: AnatomyViewerProps = {}
 
                 {/* Informações do Músculo Selecionado ou Instrução */}
                 <div className="p-6 bg-slate-950 min-h-[35%] flex flex-col justify-center border-t border-slate-900 shadow-[0_-10px_20px_rgba(0,0,0,0.2)] z-30">
-                    {renderMuscleInfo(false)}
+                    <MuscleInfoCard
+                        muscle={activeMuscle}
+                        compact={false}
+                        contextHint={contextHint}
+                    />
                 </div>
 
             </aside>
