@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "eslint",
+    "test:quiz": "node scripts/test-quiz-utils.cjs",
+    "validate:assets": "node scripts/validate-anatomy-assets.mjs"
   },
   "dependencies": {
     "lucide-react": "^0.577.0",

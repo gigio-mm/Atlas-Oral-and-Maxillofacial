@@ -2,28 +2,21 @@
 
 import React from 'react';
 import { Trophy, Target, Brain, ArrowRight, AlertTriangle, CheckCircle2, BookOpen } from 'lucide-react';
-
-interface QuestionResult {
-    muscleCorrect: boolean;
-    accidentCorrect: boolean;
-    userMuscleAnswer: string;
-    userAccidentAnswer: string;
-    correctMuscleName: string;
-    correctAccidentName: string;
-    muscleId: string;
-}
+import type { QuestionResult } from '@/types/anatomy';
 
 interface QuizFeedbackProps {
     results: QuestionResult[];
     onGoToAtlas: () => void;
     onReview: () => void;
+    onReviewOnlyErrors: () => void;
 }
 
-export default function QuizFeedback({ results, onGoToAtlas, onReview }: QuizFeedbackProps) {
+export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewOnlyErrors }: QuizFeedbackProps) {
     const total = results.length;
     const musclesCorrect = results.filter(r => r.muscleCorrect).length;
     const accidentsCorrect = results.filter(r => r.accidentCorrect).length;
     const completeCorrect = results.filter(r => r.muscleCorrect && r.accidentCorrect).length;
+    const incorrectResults = results.filter(r => !r.muscleCorrect || !r.accidentCorrect);
 
     const musclePct = Math.round((musclesCorrect / total) * 100);
     const accidentPct = Math.round((accidentsCorrect / total) * 100);
@@ -173,17 +166,29 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview }: QuizFee
                 </div>
 
                 {/* Action buttons */}
-                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-lg">
+                <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-2xl">
                     <button
                         onClick={onReview}
-                        className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 px-8 py-4 text-sm sm:text-base font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition-all duration-300 rounded-full border border-slate-700/60 hover:border-slate-600 shadow-lg cursor-pointer"
+                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition-all duration-300 rounded-full border border-slate-700/60 hover:border-slate-600 shadow-lg active:scale-95 cursor-pointer"
                     >
                         <BookOpen className="w-5 h-5 text-slate-400" />
                         <span>Revisar Prova</span>
                     </button>
+                    {incorrectResults.length > 0 && (
+                        <button
+                            onClick={onReviewOnlyErrors}
+                            className="w-full sm:flex-1 group inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-bold text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 transition-all duration-300 rounded-full border border-amber-500/30 hover:border-amber-400/50 shadow-lg active:scale-95 cursor-pointer"
+                        >
+                            <AlertTriangle className="w-5 h-5 text-amber-400" />
+                            <span>Revisar apenas erros</span>
+                            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300">
+                                {incorrectResults.length}
+                            </span>
+                        </button>
+                    )}
                     <button
                         onClick={onGoToAtlas}
-                        className="w-full sm:w-auto group inline-flex items-center justify-center gap-3 px-8 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:translate-y-0 cursor-pointer"
+                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
                     >
                         <ArrowRight className="w-5 h-5 text-blue-200" />
                         <span>Ir para o Guia Atlas</span>

@@ -1,103 +1,86 @@
 'use client';
 
-import React, { useState } from 'react';
-import { Check, X, ArrowRight, ArrowLeft, BookOpen, ChevronLeft } from 'lucide-react';
-import { muscleData, Muscle } from '@/constants/muscleData';
-
-interface QuestionResult {
-    muscleCorrect: boolean;
-    accidentCorrect: boolean;
-    userMuscleAnswer: string;
-    userAccidentAnswer: string;
-    correctMuscleName: string;
-    correctAccidentName: string;
-    muscleId: string;
-}
+import React, { useCallback, useEffect, useState } from 'react';
+import { Check, X, ArrowRight, ArrowLeft, BookOpen, ChevronLeft, Filter, ZoomIn } from 'lucide-react';
+import { muscleData } from '@/constants/muscleData';
+import type { QuestionResult } from '@/types/anatomy';
+import { isQuestionIncorrect } from '@/lib/quizUtils';
+import AnatomyImageViewer from './AnatomyImageViewer';
+import ImageModal from './ImageModal';
 
 interface QuizReviewProps {
     results: QuestionResult[];
     onGoToAtlas: () => void;
     onBackToFeedback: () => void;
+    initialOnlyErrors?: boolean;
 }
 
-export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: QuizReviewProps) {
+export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, initialOnlyErrors = false }: QuizReviewProps) {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const total = results.length;
-    const result = results[currentIndex];
+    const [isOnlyErrors, setIsOnlyErrors] = useState(initialOnlyErrors);
+    const reviewResults = isOnlyErrors
+        ? results.filter(isQuestionIncorrect)
+        : results;
+    const total = reviewResults.length;
+    const result = reviewResults[currentIndex];
+    const errorCount = results.filter(isQuestionIncorrect).length;
+    const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
 
     // Find the muscle data for the current question to render the image
-    const muscle = muscleData.find(m => m.id === result.muscleId) || null;
+    const muscle = result ? muscleData.find(m => m.id === result.muscleId) || null : null;
 
     const isFirst = currentIndex === 0;
     const isLast = currentIndex === total - 1;
 
-    const handlePrev = () => {
+    const handlePrev = useCallback(() => {
         if (!isFirst) setCurrentIndex(prev => prev - 1);
-    };
+    }, [isFirst]);
 
-    const handleNext = () => {
+    const handleNext = useCallback(() => {
         if (!isLast) setCurrentIndex(prev => prev + 1);
+    }, [isLast]);
+
+    const handleReviewModeChange = () => {
+        setIsOnlyErrors(prev => !prev);
+        setCurrentIndex(0);
     };
 
-    // ── Renderiza a imagem da questão ──
-    const renderQuestionImage = (m: Muscle) => {
-        if (m.displayMode === 'standard') {
-            return (
-                <div key={m.id} className="relative w-full h-full flex items-center justify-center">
-                    <img
-                        src={m.baseImage || '/images/cranio-masseter-base.png'}
-                        alt=""
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        className="block w-full h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] z-0 max-h-[30vh] sm:max-h-[40vh] text-transparent"
-                    />
-                    {m.highlightImage && (
-                        <img
-                            key={`highlight-${m.id}`}
-                            src={m.highlightImage}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain drop-shadow-[0_0_20px_rgba(56,189,248,0.4)] pointer-events-none z-10 text-transparent"
-                        />
-                    )}
-                </div>
-            );
-        }
+    useEffect(() => {
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (isZoomModalOpen) return;
+            if (event.key === 'ArrowLeft' && !isFirst) {
+                event.preventDefault();
+                handlePrev();
+            }
+            if (event.key === 'ArrowRight' && !isLast) {
+                event.preventDefault();
+                handleNext();
+            }
+        };
 
-        // Double mode
+        window.addEventListener('keydown', handleKeyDown);
+        return () => window.removeEventListener('keydown', handleKeyDown);
+    }, [handleNext, handlePrev, isZoomModalOpen]);
+
+    if (!result) {
         return (
-            <div key={m.id} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 w-full items-center">
-                <div className="flex flex-col items-center gap-2">
-                    <h3 className="text-[0.6rem] sm:text-xs font-semibold text-slate-400 uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700/50">
-                        Músculo
-                    </h3>
-                    <div className="bg-slate-900/40 rounded-xl sm:rounded-2xl w-full flex items-center justify-center p-2 sm:p-4 border border-slate-800/80">
-                        <img
-                            src={m.image1}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="block w-full h-auto max-h-[20vh] sm:max-h-[30vh] object-contain text-transparent"
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                    <h3 className="text-[0.6rem] sm:text-xs font-semibold text-blue-400 uppercase tracking-widest bg-blue-900/20 px-3 py-1 rounded-full border border-blue-500/30">
-                        Acidente
-                    </h3>
-                    <div className="bg-blue-950/20 rounded-xl sm:rounded-2xl w-full flex items-center justify-center p-2 sm:p-4 border border-blue-900/30">
-                        <img
-                            src={m.image2}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="block w-full h-auto max-h-[20vh] sm:max-h-[30vh] object-contain text-transparent"
-                        />
-                    </div>
+            <div className="flex min-h-[100dvh] w-full items-center justify-center bg-slate-950 p-6 text-slate-100">
+                <div className="max-w-md rounded-2xl border border-white/10 bg-white/5 p-6 text-center shadow-2xl shadow-black/40">
+                    <p className="text-sm text-slate-400">Não há questões disponíveis para revisar.</p>
+                    <button
+                        type="button"
+                        onClick={onBackToFeedback}
+                        className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition-all hover:bg-white/10 active:scale-95"
+                    >
+                        Voltar ao resultado
+                    </button>
                 </div>
             </div>
         );
-    };
+    }
 
     const bothCorrect = result.muscleCorrect && result.accidentCorrect;
-    const noneCorrect = !result.muscleCorrect && !result.accidentCorrect;
+    const noneCorrect = result && !result.muscleCorrect && !result.accidentCorrect;
 
     return (
         <div className="min-h-[100dvh] w-full bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
@@ -106,14 +89,16 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
                 <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center gap-3">
                         <button
+                            type="button"
                             onClick={onBackToFeedback}
+                            aria-label="Voltar ao resultado do Quiz"
                             className="text-slate-400 hover:text-white transition-colors p-1"
                             title="Voltar ao Resultado"
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
                         <h1 className="text-base sm:text-lg font-light tracking-tight text-slate-300">
-                            Revisão <span className="font-semibold text-slate-100">da Prova</span>
+                            Revisão <span className="font-semibold text-slate-100">{isOnlyErrors ? 'apenas dos erros' : 'da Prova'}</span>
                         </h1>
                     </div>
                     <span className="text-xs sm:text-sm text-slate-500 font-mono">
@@ -131,6 +116,22 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
 
             {/* Main content — scrollable */}
             <main className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
+                {errorCount > 0 && (
+                    <button
+                        type="button"
+                        onClick={handleReviewModeChange}
+                        aria-pressed={isOnlyErrors}
+                        className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-300 active:scale-95 cursor-pointer ${
+                            isOnlyErrors
+                                ? 'border-amber-400/50 bg-amber-400/15 text-amber-200'
+                                : 'border-slate-700 bg-slate-900/70 text-slate-400 hover:border-amber-500/40 hover:text-amber-200'
+                        }`}
+                    >
+                        <Filter className="w-4 h-4" />
+                        {isOnlyErrors ? 'Mostrar todas as questões' : `Revisar apenas erros (${errorCount})`}
+                    </button>
+                )}
+
                 {/* Overall status badge */}
                 <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider border
                     ${bothCorrect
@@ -151,9 +152,18 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
 
                 {/* Image viewer */}
                 {muscle && (
-                    <div className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex items-center justify-center transition-all duration-300">
-                        {renderQuestionImage(muscle)}
-                    </div>
+                    <button
+                        type="button"
+                        onClick={() => setIsZoomModalOpen(true)}
+                        aria-label={`Ampliar imagens de ${muscle.name}`}
+                        className="group/review-image relative flex w-full max-w-4xl cursor-zoom-in items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-3xl transition-all duration-300 hover:border-white/30 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 sm:rounded-3xl sm:p-6"
+                    >
+                        <span className="pointer-events-none absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-slate-300 opacity-0 transition-opacity duration-300 group-hover/review-image:opacity-100">
+                            <ZoomIn className="h-3.5 w-3.5 text-blue-300" />
+                            Ampliar
+                        </span>
+                        <AnatomyImageViewer muscle={muscle} variant="review" />
+                    </button>
                 )}
 
                 {/* Review cards */}
@@ -250,8 +260,10 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
                 {/* Navigation buttons */}
                 <div className="w-full max-w-2xl flex items-center justify-between pb-4 sm:pb-6">
                     <button
+                        type="button"
                         onClick={handlePrev}
                         disabled={isFirst}
+                        aria-label="Ir para a questão anterior"
                         className={`flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm transition-all duration-300
                             ${isFirst
                                 ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
@@ -264,8 +276,9 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
 
                     {isLast ? (
                         <button
+                            type="button"
                             onClick={onGoToAtlas}
-                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 cursor-pointer"
+                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:from-blue-500 hover:to-indigo-500 active:scale-95 transition-all duration-300 cursor-pointer"
                         >
                             <BookOpen className="w-4 h-4" />
                             Ir para o Atlas
@@ -273,8 +286,10 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
                         </button>
                     ) : (
                         <button
+                            type="button"
                             onClick={handleNext}
-                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white transition-all duration-300 cursor-pointer"
+                            aria-label="Ir para a próxima questão"
+                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white active:scale-95 transition-all duration-300 cursor-pointer"
                         >
                             Próxima
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -282,6 +297,11 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback }: Q
                     )}
                 </div>
             </main>
+            <ImageModal
+                isOpen={isZoomModalOpen}
+                onClose={() => setIsZoomModalOpen(false)}
+                muscle={muscle}
+            />
         </div>
     );
 }
