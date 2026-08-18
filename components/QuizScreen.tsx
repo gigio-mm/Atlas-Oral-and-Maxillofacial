@@ -2,67 +2,11 @@
 
 import React, { useState, useMemo, useRef } from 'react';
 import { Check, X, ArrowRight, Send, Target } from 'lucide-react';
-import { muscleData, Muscle } from '@/constants/muscleData';
-import ImageZoomModal from './ImageZoomModal';
-
-// ── Normaliza texto para comparação: remove acentos, lowercase, trim ──
-function normalize(text: string): string {
-    return text
-        .normalize('NFD')
-        .replace(/[\u0300-\u036f]/g, '')
-        .toLowerCase()
-        .trim()
-        .replace(/\s+/g, ' ')
-        .replace(/\bporcao\b/g, 'parte');
-}
-
-// ── Remove a palavra "musculo" de qualquer posição do texto normalizado ──
-function stripMusculo(text: string): string {
-    return text
-        .replace(/\bmusculo\b/g, '')
-        .replace(/\s+/g, ' ')
-        .trim();
-}
-
-// ── Comparação flexível: aceita resposta completa ou sem prefixos ──
-function flexMatch(userAnswer: string, correctAnswer: string): boolean {
-    const a = normalize(userAnswer);
-    const b = normalize(correctAnswer);
-
-    // Match exato após normalização
-    if (a === b) return true;
-
-    // Match sem "musculo" (ex: "procero" ou "porcao superior do pterigoideo lateral")
-    const aStripped = stripMusculo(a);
-    const bStripped = stripMusculo(b);
-
-    if (aStripped === bStripped) return true;
-
-    // O aluno digitou o nome sem o prefixo
-    if (a === bStripped) return true;
-
-    // O aluno digitou com prefixo diferente mas o core é igual
-    if (aStripped === b) return true;
-
-    // Match com partes em ordem invertida (ex: "hamulo pterigoideo e fossa escafoide" == "fossa escafoide e hamulo pterigoideo")
-    if (aStripped.includes(' e ') && bStripped.includes(' e ')) {
-        const aParts = aStripped.split(' e ').map(p => p.trim()).sort();
-        const bParts = bStripped.split(' e ').map(p => p.trim()).sort();
-        if (aParts.length === bParts.length && aParts.every((part, i) => part === bParts[i])) return true;
-    }
-
-    return false;
-}
-
-interface QuestionResult {
-    muscleCorrect: boolean;
-    accidentCorrect: boolean;
-    userMuscleAnswer: string;
-    userAccidentAnswer: string;
-    correctMuscleName: string;
-    correctAccidentName: string;
-    muscleId: string;
-}
+import { muscleData } from '@/constants/muscleData';
+import type { QuestionResult } from '@/types/anatomy';
+import { flexMatch } from '@/lib/quizUtils';
+import AnatomyImageViewer from './AnatomyImageViewer';
+import ImageModal from './ImageModal';
 
 interface QuizScreenProps {
     onFinish: (results: QuestionResult[]) => void;
@@ -138,63 +82,6 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
         }
     };
 
-    // ── Renderiza a imagem da questão ──
-    const renderQuestionImage = (muscle: Muscle) => {
-        if (muscle.displayMode === 'standard') {
-            return (
-                <div key={muscle.id} className="relative w-full h-full flex items-center justify-center">
-                    <img
-                        src={muscle.baseImage || '/images/cranio-masseter-base.png'}
-                        alt=""
-                        onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                        className="block w-full h-auto object-contain drop-shadow-[0_0_15px_rgba(255,255,255,0.1)] z-0 max-h-[35vh] sm:max-h-[45vh] text-transparent"
-                    />
-                    {muscle.highlightImage && (
-                        <img
-                            key={`highlight-${muscle.id}`}
-                            src={muscle.highlightImage}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full object-contain drop-shadow-[0_0_20px_rgba(56,189,248,0.4)] pointer-events-none z-10 text-transparent"
-                        />
-                    )}
-                </div>
-            );
-        }
-
-        // Double mode: side by side
-        return (
-            <div key={muscle.id} className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-6 w-full items-center">
-                <div className="flex flex-col items-center gap-2">
-                    <h3 className="text-[0.6rem] sm:text-xs font-semibold text-slate-400 uppercase tracking-widest bg-slate-900/50 px-3 py-1 rounded-full border border-slate-700/50">
-                        Músculo
-                    </h3>
-                    <div className="bg-slate-900/40 rounded-xl sm:rounded-2xl w-full flex items-center justify-center p-2 sm:p-4 border border-slate-800/80">
-                        <img
-                            src={muscle.image1}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="block w-full h-auto max-h-[22vh] sm:max-h-[35vh] object-contain text-transparent"
-                        />
-                    </div>
-                </div>
-                <div className="flex flex-col items-center gap-2">
-                    <h3 className="text-[0.6rem] sm:text-xs font-semibold text-blue-400 uppercase tracking-widest bg-blue-900/20 px-3 py-1 rounded-full border border-blue-500/30">
-                        Acidente
-                    </h3>
-                    <div className="bg-blue-950/20 rounded-xl sm:rounded-2xl w-full flex items-center justify-center p-2 sm:p-4 border border-blue-900/30">
-                        <img
-                            src={muscle.image2}
-                            alt=""
-                            onError={(e) => { e.currentTarget.style.display = 'none'; }}
-                            className="block w-full h-auto max-h-[22vh] sm:max-h-[35vh] object-contain text-transparent"
-                        />
-                    </div>
-                </div>
-            </div>
-        );
-    };
-
     return (
         <div className="min-h-[100dvh] w-full bg-slate-950 text-slate-100 flex flex-col overflow-hidden">
             {/* Header */}
@@ -219,31 +106,35 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
             {/* Main content — scrollable */}
             <main className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
                 {/* Image viewer */}
-                <div 
+                <button
+                    type="button"
                     className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/30 cursor-pointer relative group"
                     onClick={() => setIsZoomModalOpen(true)}
+                    aria-label={`Ampliar imagens de ${currentQuestion.name}`}
                     title="Clique para ampliar"
                 >
                     <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[0.65rem] uppercase tracking-widest text-white/40 font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
                         <Target size={12} /> Clique para ampliar
                     </div>
-                    {renderQuestionImage(currentQuestion)}
-                </div>
+                    <AnatomyImageViewer muscle={currentQuestion} variant="quiz" />
+                </button>
 
                 {/* Answer form */}
                 <div className="w-full max-w-2xl space-y-3 sm:space-y-4">
                     {/* Accident name input (pergunta primeiro) */}
                     <div className="relative">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
+                        <label htmlFor="quiz-accident-answer" className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
                             Acidente Anatômico
                         </label>
                         <div className="relative">
                             <input
+                                id="quiz-accident-answer"
                                 type="text"
                                 value={accidentAnswer}
                                 onChange={(e) => setAccidentAnswer(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 disabled={hasSubmitted}
+                                aria-invalid={hasSubmitted && !accidentCorrect}
                                 placeholder="Digite o acidente anatômico..."
                                 className={`w-full px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/80 border text-sm sm:text-base text-slate-100 placeholder-slate-600 outline-none transition-all duration-300 pr-12
                                     ${hasSubmitted
@@ -255,7 +146,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                                     ${hasSubmitted ? 'opacity-80 cursor-not-allowed' : ''}`}
                             />
                             {hasSubmitted && (
-                                <div className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-full ${accidentCorrect ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+                                <div aria-hidden="true" className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-full ${accidentCorrect ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
                                     {accidentCorrect
                                         ? <Check className="w-4 h-4 text-emerald-400" />
                                         : <X className="w-4 h-4 text-red-400" />
@@ -267,16 +158,18 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
 
                     {/* Muscle name input (pergunta depois) */}
                     <div className="relative">
-                        <label className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
+                        <label htmlFor="quiz-muscle-answer" className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
                             Nome do Músculo
                         </label>
                         <div className="relative">
                             <input
+                                id="quiz-muscle-answer"
                                 type="text"
                                 value={muscleAnswer}
                                 onChange={(e) => setMuscleAnswer(e.target.value)}
                                 onKeyDown={handleKeyDown}
                                 disabled={hasSubmitted}
+                                aria-invalid={hasSubmitted && !muscleCorrect}
                                 placeholder="Digite o nome do músculo..."
                                 className={`w-full px-4 py-3 sm:py-3.5 rounded-xl bg-slate-900/80 border text-sm sm:text-base text-slate-100 placeholder-slate-600 outline-none transition-all duration-300 pr-12
                                     ${hasSubmitted
@@ -288,7 +181,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                                     ${hasSubmitted ? 'opacity-80 cursor-not-allowed' : ''}`}
                             />
                             {hasSubmitted && (
-                                <div className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-full ${muscleCorrect ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
+                                <div aria-hidden="true" className={`absolute right-3 top-1/2 -translate-y-1/2 flex items-center justify-center w-7 h-7 rounded-full ${muscleCorrect ? 'bg-emerald-500/20' : 'bg-red-500/20'}`}>
                                     {muscleCorrect
                                         ? <Check className="w-4 h-4 text-emerald-400" />
                                         : <X className="w-4 h-4 text-red-400" />
@@ -299,13 +192,30 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     </div>
                 </div>
 
+                {hasSubmitted && (
+                    <p role="status" aria-live="polite" className={`w-full max-w-2xl text-center text-sm font-semibold ${muscleCorrect && accidentCorrect
+                        ? 'text-emerald-300'
+                        : muscleCorrect || accidentCorrect
+                            ? 'text-amber-300'
+                            : 'text-red-300'
+                        }`}>
+                        {muscleCorrect && accidentCorrect
+                            ? 'Resposta completa correta.'
+                            : muscleCorrect
+                                ? 'Músculo correto. Revise o acidente anatômico.'
+                                : accidentCorrect
+                                    ? 'Acidente anatômico correto. Revise o músculo.'
+                                    : 'As duas respostas precisam de revisão.'}
+                    </p>
+                )}
+
                 {/* Action buttons */}
                 <div className="w-full max-w-2xl flex justify-center pb-4 sm:pb-6">
                     {!hasSubmitted ? (
                         <button
                             onClick={handleSubmit}
                             disabled={muscleAnswer.trim() === '' || accidentAnswer.trim() === ''}
-                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-blue-500/25 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none cursor-pointer"
+                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-blue-500/25 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none cursor-pointer"
                         >
                             <Send className="w-4 h-4" />
                             <span>Responder</span>
@@ -313,7 +223,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     ) : (
                         <button
                             onClick={handleNext}
-                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 transition-all duration-300 rounded-full shadow-lg cursor-pointer"
+                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 transition-all duration-300 rounded-full shadow-lg active:scale-95 cursor-pointer"
                         >
                             <span>{isLastQuestion ? 'Ver Resultado' : 'Próxima Questão'}</span>
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
@@ -321,7 +231,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     )}
                 </div>
             </main>
-            <ImageZoomModal 
+            <ImageModal
                 isOpen={isZoomModalOpen} 
                 onClose={() => setIsZoomModalOpen(false)} 
                 muscle={currentQuestion} 

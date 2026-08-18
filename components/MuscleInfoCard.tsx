@@ -1,8 +1,8 @@
 'use client';
 
 import React from 'react';
-import { Info, Target } from 'lucide-react';
-import { Muscle } from '@/constants/muscleData';
+import { ChevronLeft, ChevronRight, Info, Target } from 'lucide-react';
+import type { Muscle } from '@/types/anatomy';
 
 interface MuscleInfoCardProps {
     /** The currently active muscle, or null if none is selected. */
@@ -11,9 +11,22 @@ interface MuscleInfoCardProps {
     compact?: boolean;
     /** Contextual hint text shown when no muscle is selected. */
     contextHint?: string;
+    /** Guided-tour controls. They are optional so the card remains reusable. */
+    onPrevious?: () => void;
+    onNext?: () => void;
+    isPreviousDisabled?: boolean;
+    isNextDisabled?: boolean;
 }
 
-export default function MuscleInfoCard({ muscle, compact = false, contextHint }: MuscleInfoCardProps) {
+export default function MuscleInfoCard({
+    muscle,
+    compact = false,
+    contextHint,
+    onPrevious,
+    onNext,
+    isPreviousDisabled = false,
+    isNextDisabled = false,
+}: MuscleInfoCardProps) {
     if (muscle) {
         return (
             <div className={`animate-in fade-in slide-in-from-bottom-4 duration-300`}>
@@ -42,6 +55,31 @@ export default function MuscleInfoCard({ muscle, compact = false, contextHint }:
                         {muscle.anatomicalAccident.title}
                     </h4>
                 </div>
+
+                {(onPrevious || onNext) && (
+                    <div className={`grid grid-cols-2 gap-2 ${compact ? 'mt-3' : 'mt-4'}`}>
+                        <button
+                            type="button"
+                            onClick={onPrevious}
+                            disabled={isPreviousDisabled}
+                            aria-label="Ir para o músculo anterior"
+                            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-white/10 bg-white/5 px-3 text-xs font-semibold text-slate-300 shadow-lg shadow-black/20 transition-all duration-300 hover:border-white/20 hover:bg-white/10 hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-white/5 disabled:hover:text-slate-300"
+                        >
+                            <ChevronLeft className="h-4 w-4" />
+                            <span>Anterior</span>
+                        </button>
+                        <button
+                            type="button"
+                            onClick={onNext}
+                            disabled={isNextDisabled}
+                            aria-label="Ir para o próximo músculo"
+                            className="inline-flex min-h-11 items-center justify-center gap-1.5 rounded-xl border border-blue-400/20 bg-blue-500/10 px-3 text-xs font-semibold text-blue-300 shadow-lg shadow-black/20 transition-all duration-300 hover:border-blue-300/40 hover:bg-blue-500/20 hover:text-blue-100 active:scale-95 disabled:cursor-not-allowed disabled:opacity-35 disabled:hover:bg-blue-500/10 disabled:hover:text-blue-300"
+                        >
+                            <span>Próximo</span>
+                            <ChevronRight className="h-4 w-4" />
+                        </button>
+                    </div>
+                )}
             </div>
         );
     }

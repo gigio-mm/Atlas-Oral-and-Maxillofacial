@@ -1,17 +1,6 @@
-export type DisplayMode = 'standard' | 'double';
+import type { Muscle } from '@/types/anatomy';
 
-export interface Muscle {
-    id: string;
-    name: string;
-    displayMode: DisplayMode;
-    baseImage?: string;
-    highlightImage?: string;
-    image1?: string;
-    image2?: string;
-    anatomicalAccident: {
-        title: string;
-    };
-}
+export type { DisplayMode, Muscle } from '@/types/anatomy';
 
 export const muscleData: Muscle[] = [
     // --- Ordem pedagógica do roteiro da monitoria ---
@@ -57,7 +46,6 @@ export const muscleData: Muscle[] = [
         name: 'Porção Superficial do Músculo Masseter',
         displayMode: 'standard',
         baseImage: '/images/cranio-masseter-base.png',
-        highlightImage: '/images/cranio-masseter-highlight.png',
         anatomicalAccident: { title: 'Borda inferior do Osso Zigomático' },
     },
     // 6. Parte Profunda do Músculo Masseter
