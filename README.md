@@ -16,7 +16,7 @@
 
 ## 📋 About
 
-**Atlas Oral-Maxillofacial** is a web-based educational tool built for dentistry students and professionals who need a fast, interactive way to explore orofacial anatomy.
+**Atlas Oral-Maxillofacial** is a web-based educational tool built for dentistry students and professionals who need a fast, interactive way to explore orofacial anatomy. This project was developed in collaboration with dentistry students who serve as academic monitors.
 
 Traditional anatomical study relies on static textbook images that lack interactivity and immediate feedback. This atlas solves that by providing **hover-triggered visual data** — allowing users to intuitively navigate through 25+ facial muscles and instantly see their associated anatomical accidents (bony landmarks), all within a polished dark-mode interface designed for lecture halls and self-study alike.
 
@@ -28,6 +28,8 @@ Traditional anatomical study relies on static textbook images that lack interact
 - **Dual Display Modes:**
   - **Standard Mode** — Overlays a highlighted muscle directly on the base skull image with smooth opacity transitions.
   - **Side-by-Side Mode** — Presents a comparative view of the isolated muscle alongside its corresponding skeletal landmark.
+- **Interactive Quiz Module** — Test knowledge through an integrated quiz mode designed to reinforce anatomical learning.
+- **Dynamic Feedback Evaluation** — Provides immediate, dynamic feedback and review sessions during the quiz to enhance the study and retention process.
 - **25+ Anatomical Entries** — Curated dataset covering key muscles of mastication, facial expression, suprahyoid and infrahyoid groups, and palate muscles.
 - **Image Pre-loading** — All anatomical images are preloaded on mount with a fallback timeout, ensuring zero-lag interactions.
 - **Responsive Layout** — Adapts seamlessly from desktop to mobile with a collapsible sidebar panel.
@@ -92,29 +94,41 @@ atlas-bucomaxilo/
 │   ├── page.tsx              # Home page entry point
 │   └── globals.css           # Global styles
 │
-├── components/
-│   └── AnatomyViewer.tsx     # Core atlas component — handles display
-│                             # modes, hover state, and image stacking
+├── components/               # React UI components
+│   ├── AnatomyViewer.tsx     # Core atlas component
+│   ├── MuscleInfoCard.tsx    # Detail view for selected muscles
+│   ├── QuizScreen.tsx        # Interactive quiz functionality
+│   └── ...                   # Other UI components (Modals, Cover, etc.)
 │
 ├── constants/
-│   └── muscleData.ts         # Typed muscle dataset with display mode
-│                             # configuration and anatomical accident data
+│   └── muscleData.ts         # Dataset mapping muscles to images and landmarks
+│
+├── lib/                      # Utilities
+│   ├── anatomyUtils.ts       # Utility functions for anatomy logic
+│   └── quizUtils.ts          # Utility functions for quiz logic
+│
+├── types/                    # TypeScript type definitions
+│   └── anatomy.ts            # Type definitions for anatomy data
+│
+├── scripts/                  # Helper and validation scripts
 │
 ├── public/
-│   └── images/               # Anatomical images (base skull, muscle
-│                             # highlights, and landmark references)
+│   └── images/               # Anatomical images
 │
 ├── next.config.ts            # Next.js configuration
-├── tailwind.config.ts        # Tailwind CSS configuration
 ├── tsconfig.json             # TypeScript configuration
 └── package.json              # Dependencies and scripts
 ```
 
 ### Key Files
 
-- **`constants/muscleData.ts`** — The data layer. Defines a `Muscle` interface with two display modes (`standard` and `double`) and exports an array of 25 muscle entries, each mapped to image paths and anatomical accident descriptions.
+- **`constants/muscleData.ts`** — The data layer. Exports the dataset of muscle entries, mapped to image paths and anatomical accident descriptions.
 
-- **`components/AnatomyViewer.tsx`** — The presentation layer. Manages the active muscle state, conditionally renders either an overlay view or a side-by-side comparison, and handles image pre-loading on mount.
+- **`components/AnatomyViewer.tsx`** — The presentation layer. Manages the active muscle state, renders the atlas view, and handles interactions.
+
+- **`types/anatomy.ts`** — The types layer. Defines the core interfaces like `Muscle` and its display modes.
+
+- **`lib/anatomyUtils.ts` & `lib/quizUtils.ts`** — Utility functions handling core logic for the atlas and quiz functionalities.
 
 ---
 
