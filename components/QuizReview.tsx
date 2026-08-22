@@ -70,7 +70,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                     <button
                         type="button"
                         onClick={onBackToFeedback}
-                        className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-semibold text-slate-200 transition-all hover:bg-white/10 active:scale-95"
+                        className="mt-5 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm font-heading font-semibold text-slate-200 transition-all hover:bg-white/10 active:scale-95"
                     >
                         Voltar ao resultado
                     </button>
@@ -97,11 +97,11 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         >
                             <ChevronLeft className="w-5 h-5" />
                         </button>
-                        <h1 className="text-base sm:text-lg font-light tracking-tight text-slate-300">
+                        <h1 className="text-base sm:text-lg font-heading font-light tracking-tight text-slate-300">
                             Revisão <span className="font-semibold text-slate-100">{isOnlyErrors ? 'apenas dos erros' : 'da Prova'}</span>
                         </h1>
                     </div>
-                    <span className="text-xs sm:text-sm text-slate-500 font-mono">
+                    <span className="text-xs sm:text-sm font-heading font-medium tracking-wide text-slate-500">
                         {currentIndex + 1} / {total}
                     </span>
                 </div>
@@ -121,7 +121,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         type="button"
                         onClick={handleReviewModeChange}
                         aria-pressed={isOnlyErrors}
-                        className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs sm:text-sm font-bold transition-all duration-300 active:scale-95 cursor-pointer ${
+                        className={`inline-flex items-center gap-2 rounded-full border px-4 py-2 text-xs sm:text-sm font-heading font-bold transition-all duration-300 active:scale-95 cursor-pointer ${
                             isOnlyErrors
                                 ? 'border-amber-400/50 bg-amber-400/15 text-amber-200'
                                 : 'border-slate-700 bg-slate-900/70 text-slate-400 hover:border-amber-500/40 hover:text-amber-200'
@@ -133,7 +133,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                 )}
 
                 {/* Overall status badge */}
-                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-bold uppercase tracking-wider border
+                <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border
                     ${bothCorrect
                         ? 'bg-emerald-500/10 border-emerald-500/30 text-emerald-400'
                         : noneCorrect
@@ -158,7 +158,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         aria-label={`Ampliar imagens de ${muscle.name}`}
                         className="group/review-image relative flex w-full max-w-4xl cursor-zoom-in items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-3xl transition-all duration-300 hover:border-white/30 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 sm:rounded-3xl sm:p-6"
                     >
-                        <span className="pointer-events-none absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-xs font-semibold text-slate-300 opacity-0 transition-opacity duration-300 group-hover/review-image:opacity-100">
+                        <span className="pointer-events-none absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-xs font-heading font-semibold text-slate-300 opacity-0 transition-opacity duration-300 group-hover/review-image:opacity-100">
                             <ZoomIn className="h-3.5 w-3.5 text-blue-300" />
                             Ampliar
                         </span>
@@ -175,7 +175,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             : 'bg-red-500/5 border-red-500/30'
                     }`}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                            <span className="text-xs font-heading font-bold uppercase tracking-widest text-slate-500">
                                 Nome do Músculo
                             </span>
                             <div className={`flex items-center justify-center w-6 h-6 rounded-full ${
@@ -190,7 +190,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
 
                         <div className="space-y-2">
                             <div className="flex items-start gap-3">
-                                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
+                                <span className="text-[0.65rem] font-heading font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
                                     Sua resp.
                                 </span>
                                 <span className={`text-sm sm:text-base font-medium ${
@@ -201,10 +201,10 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             </div>
                             {!result.muscleCorrect && (
                                 <div className="flex items-start gap-3">
-                                    <span className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
+                                    <span className="text-[0.65rem] font-heading font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
                                         Correta
                                     </span>
-                                    <span className="text-sm sm:text-base font-semibold text-emerald-400">
+                                    <span className="text-sm sm:text-base font-heading font-semibold text-emerald-400">
                                         {result.correctMuscleName}
                                     </span>
                                 </div>
@@ -219,7 +219,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             : 'bg-red-500/5 border-red-500/30'
                     }`}>
                         <div className="flex items-center justify-between mb-3">
-                            <span className="text-xs font-bold uppercase tracking-widest text-slate-500">
+                            <span className="text-xs font-heading font-bold uppercase tracking-widest text-slate-500">
                                 Acidente Anatômico
                             </span>
                             <div className={`flex items-center justify-center w-6 h-6 rounded-full ${
@@ -234,7 +234,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
 
                         <div className="space-y-2">
                             <div className="flex items-start gap-3">
-                                <span className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
+                                <span className="text-[0.65rem] font-heading font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
                                     Sua resp.
                                 </span>
                                 <span className={`text-sm sm:text-base font-medium ${
@@ -245,10 +245,10 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             </div>
                             {!result.accidentCorrect && (
                                 <div className="flex items-start gap-3">
-                                    <span className="text-[0.65rem] font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
+                                    <span className="text-[0.65rem] font-heading font-bold uppercase tracking-widest text-slate-600 mt-1 shrink-0 w-20">
                                         Correta
                                     </span>
-                                    <span className="text-sm sm:text-base font-semibold text-emerald-400">
+                                    <span className="text-sm sm:text-base font-heading font-semibold text-emerald-400">
                                         {result.correctAccidentName}
                                     </span>
                                 </div>
@@ -264,7 +264,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         onClick={handlePrev}
                         disabled={isFirst}
                         aria-label="Ir para a questão anterior"
-                        className={`flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm transition-all duration-300
+                        className={`flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-heading font-bold uppercase tracking-wider text-xs sm:text-sm transition-all duration-300
                             ${isFirst
                                 ? 'bg-slate-800/50 text-slate-600 cursor-not-allowed'
                                 : 'bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white cursor-pointer'
@@ -278,7 +278,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         <button
                             type="button"
                             onClick={onGoToAtlas}
-                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:from-blue-500 hover:to-indigo-500 active:scale-95 transition-all duration-300 cursor-pointer"
+                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-heading font-bold uppercase tracking-wider text-xs sm:text-sm bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-lg shadow-blue-500/30 hover:from-blue-500 hover:to-indigo-500 active:scale-95 transition-all duration-300 cursor-pointer"
                         >
                             <BookOpen className="w-4 h-4" />
                             Ir para o Atlas
@@ -289,7 +289,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             type="button"
                             onClick={handleNext}
                             aria-label="Ir para a próxima questão"
-                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-bold uppercase tracking-wider text-xs sm:text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white active:scale-95 transition-all duration-300 cursor-pointer"
+                            className="group flex items-center gap-2 px-5 sm:px-6 py-2.5 sm:py-3 rounded-xl font-heading font-bold uppercase tracking-wider text-xs sm:text-sm bg-slate-800 text-slate-300 hover:bg-slate-700 hover:text-white active:scale-95 transition-all duration-300 cursor-pointer"
                         >
                             Próxima
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />

@@ -94,7 +94,7 @@ interface ImagePanelProps {
 function ImagePanel({ label, src, alt, imageClassName, accent = false, modal = false }: ImagePanelProps) {
     return (
         <section className={`flex min-h-0 w-full flex-col items-center gap-2 sm:gap-3 ${modal ? 'h-full justify-center' : ''}`}>
-            <h2 className={`rounded-full border px-3 py-1 text-[0.6rem] font-semibold uppercase tracking-widest shadow-inner sm:text-xs ${accent
+            <h2 className={`rounded-full border px-3 py-1 text-[0.6rem] font-heading font-semibold uppercase tracking-widest shadow-inner sm:text-xs ${accent
                 ? 'border-blue-500/30 bg-blue-900/20 text-blue-400 shadow-[0_0_12px_rgba(56,189,248,0.16)]'
                 : 'border-slate-700/70 bg-slate-900/60 text-slate-300'
                 }`}>
