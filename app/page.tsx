@@ -11,6 +11,7 @@ import type { QuestionResult } from '@/types/anatomy';
 type AppScreen = 'cover' | 'quiz' | 'feedback' | 'review' | 'atlas';
 
 const LAST_QUIZ_RESULTS_KEY = 'atlas:last-quiz-results';
+const QUIZ_COMPLETED_KEY = 'atlas:quiz-ever-completed';
 
 function isQuestionResult(value: unknown): value is QuestionResult {
   if (!value || typeof value !== 'object') return false;
@@ -48,6 +49,7 @@ export default function Home() {
     return (
       <CoverScreen
         onStart={() => setScreen('quiz')}
+        onGoToAtlas={() => setScreen('atlas')}
         onContinueAtlas={() => setScreen('atlas')}
         onViewLastResult={() => setScreen('feedback')}
         hasSavedQuiz={quizResults.length > 0}
@@ -61,6 +63,7 @@ export default function Home() {
         onFinish={(results) => {
           setQuizResults(results);
           window.localStorage.setItem(LAST_QUIZ_RESULTS_KEY, JSON.stringify(results));
+          window.localStorage.setItem(QUIZ_COMPLETED_KEY, 'true');
           setReviewOnlyErrors(false);
           setScreen('feedback');
         }}

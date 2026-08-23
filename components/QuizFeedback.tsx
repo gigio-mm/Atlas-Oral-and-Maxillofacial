@@ -106,13 +106,13 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewO
                         </defs>
                     </svg>
                     <div className="absolute inset-0 flex items-center justify-center">
-                        <span className="text-lg sm:text-xl font-bold text-white">{pct}%</span>
+                        <span className="text-lg sm:text-xl font-heading font-bold text-white">{pct}%</span>
                     </div>
                 </div>
                 {/* Icon + label */}
                 <div className="flex items-center gap-2">
                     {icon}
-                    <span className="text-xs sm:text-sm font-semibold text-slate-300 uppercase tracking-wider">{label}</span>
+                    <span className="text-xs sm:text-sm font-heading font-semibold text-slate-300 uppercase tracking-wider">{label}</span>
                 </div>
                 <span className="text-xs text-slate-500">{correct} de {total} corretos</span>
             </div>
@@ -125,7 +125,7 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewO
             <header className="w-full px-4 sm:px-6 py-4 sm:py-5 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md shrink-0">
                 <div className="flex items-center justify-center gap-2">
                     <Trophy className="w-5 h-5 text-amber-400" />
-                    <h1 className="text-base sm:text-lg font-semibold text-slate-200">Resultado do Quiz</h1>
+                    <h1 className="text-base sm:text-lg font-heading font-semibold text-slate-200">Resultado do Quiz</h1>
                 </div>
             </header>
 
@@ -155,7 +155,7 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewO
                     <div className="flex items-start gap-3 sm:gap-4">
                         <div className="shrink-0 mt-0.5">{focus.icon}</div>
                         <div>
-                            <h2 className={`text-base sm:text-lg font-bold ${focus.textClass} mb-1`}>
+                            <h2 className={`text-base sm:text-lg font-heading font-bold ${focus.textClass} mb-1`}>
                                 {focus.title}
                             </h2>
                             <p className="text-sm text-slate-400 leading-relaxed">
@@ -169,7 +169,7 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewO
                 <div className="flex flex-col sm:flex-row items-center gap-3 sm:gap-4 w-full max-w-2xl">
                     <button
                         onClick={onReview}
-                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition-all duration-300 rounded-full border border-slate-700/60 hover:border-slate-600 shadow-lg active:scale-95 cursor-pointer"
+                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-heading font-bold text-slate-200 bg-slate-800 hover:bg-slate-700 transition-all duration-300 rounded-full border border-slate-700/60 hover:border-slate-600 shadow-lg active:scale-95 cursor-pointer"
                     >
                         <BookOpen className="w-5 h-5 text-slate-400" />
                         <span>Revisar Prova</span>
@@ -177,18 +177,18 @@ export default function QuizFeedback({ results, onGoToAtlas, onReview, onReviewO
                     {incorrectResults.length > 0 && (
                         <button
                             onClick={onReviewOnlyErrors}
-                            className="w-full sm:flex-1 group inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-bold text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 transition-all duration-300 rounded-full border border-amber-500/30 hover:border-amber-400/50 shadow-lg active:scale-95 cursor-pointer"
+                            className="w-full sm:flex-1 group inline-flex items-center justify-center gap-2 px-6 py-4 text-sm sm:text-base font-heading font-bold text-amber-200 bg-amber-500/10 hover:bg-amber-500/20 transition-all duration-300 rounded-full border border-amber-500/30 hover:border-amber-400/50 shadow-lg active:scale-95 cursor-pointer"
                         >
                             <AlertTriangle className="w-5 h-5 text-amber-400" />
                             <span>Revisar apenas erros</span>
-                            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs text-amber-300">
+                            <span className="rounded-full bg-amber-400/15 px-2 py-0.5 text-xs font-heading font-semibold text-amber-300">
                                 {incorrectResults.length}
                             </span>
                         </button>
                     )}
                     <button
                         onClick={onGoToAtlas}
-                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
+                        className="w-full sm:flex-1 group inline-flex items-center justify-center gap-3 px-6 py-4 text-sm sm:text-base font-heading font-bold text-white bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 bg-[length:200%_auto] hover:bg-right transition-all duration-500 rounded-full shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:shadow-[0_0_40px_rgba(59,130,246,0.6)] transform hover:-translate-y-0.5 active:scale-95 cursor-pointer"
                     >
                         <ArrowRight className="w-5 h-5 text-blue-200" />
                         <span>Ir para o Guia Atlas</span>

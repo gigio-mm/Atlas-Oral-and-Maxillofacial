@@ -87,10 +87,10 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
             {/* Header */}
             <header className="px-4 sm:px-6 py-3 sm:py-4 border-b border-slate-800 bg-slate-900/50 backdrop-blur-md shrink-0">
                 <div className="flex items-center justify-between mb-2">
-                    <h1 className="text-base sm:text-lg font-light tracking-tight text-slate-300">
+                    <h1 className="text-base sm:text-lg font-heading font-light tracking-tight text-slate-300">
                         Quiz <span className="font-semibold text-slate-100">Bucomaxilo</span>
                     </h1>
-                    <span className="text-xs sm:text-sm text-slate-500 font-mono">
+                    <span className="text-xs sm:text-sm font-heading font-medium tracking-wide text-slate-500">
                         {currentIndex + 1} / {total}
                     </span>
                 </div>
@@ -113,7 +113,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     aria-label={`Ampliar imagens de ${currentQuestion.name}`}
                     title="Clique para ampliar"
                 >
-                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[0.65rem] uppercase tracking-widest text-white/40 font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
+                    <div className="absolute top-4 right-4 sm:top-6 sm:right-6 text-[0.65rem] uppercase tracking-widest text-white/40 font-heading font-semibold flex items-center gap-2 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-20">
                         <Target size={12} /> Clique para ampliar
                     </div>
                     <AnatomyImageViewer muscle={currentQuestion} variant="quiz" />
@@ -123,7 +123,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                 <div className="w-full max-w-2xl space-y-3 sm:space-y-4">
                     {/* Accident name input (pergunta primeiro) */}
                     <div className="relative">
-                        <label htmlFor="quiz-accident-answer" className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
+                        <label htmlFor="quiz-accident-answer" className="block text-xs font-heading font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
                             Acidente Anatômico
                         </label>
                         <div className="relative">
@@ -158,7 +158,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
 
                     {/* Muscle name input (pergunta depois) */}
                     <div className="relative">
-                        <label htmlFor="quiz-muscle-answer" className="block text-xs font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
+                        <label htmlFor="quiz-muscle-answer" className="block text-xs font-heading font-bold uppercase tracking-widest text-slate-500 mb-1.5 sm:mb-2">
                             Nome do Músculo
                         </label>
                         <div className="relative">
@@ -193,7 +193,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                 </div>
 
                 {hasSubmitted && (
-                    <p role="status" aria-live="polite" className={`w-full max-w-2xl text-center text-sm font-semibold ${muscleCorrect && accidentCorrect
+                    <p role="status" aria-live="polite" className={`w-full max-w-2xl text-center text-sm font-heading font-semibold ${muscleCorrect && accidentCorrect
                         ? 'text-emerald-300'
                         : muscleCorrect || accidentCorrect
                             ? 'text-amber-300'
@@ -215,7 +215,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                         <button
                             onClick={handleSubmit}
                             disabled={muscleAnswer.trim() === '' || accidentAnswer.trim() === ''}
-                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-blue-500/25 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none cursor-pointer"
+                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-heading font-bold text-white bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-500 hover:to-indigo-500 transition-all duration-300 rounded-full shadow-lg hover:shadow-blue-500/25 active:scale-95 disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:shadow-none cursor-pointer"
                         >
                             <Send className="w-4 h-4" />
                             <span>Responder</span>
@@ -223,7 +223,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                     ) : (
                         <button
                             onClick={handleNext}
-                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-bold text-white bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 transition-all duration-300 rounded-full shadow-lg active:scale-95 cursor-pointer"
+                            className="group inline-flex items-center justify-center gap-2.5 px-8 py-3.5 text-sm sm:text-base font-heading font-bold text-white bg-gradient-to-r from-slate-700 to-slate-600 hover:from-slate-600 hover:to-slate-500 transition-all duration-300 rounded-full shadow-lg active:scale-95 cursor-pointer"
                         >
                             <span>{isLastQuestion ? 'Ver Resultado' : 'Próxima Questão'}</span>
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
