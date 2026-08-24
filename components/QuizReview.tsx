@@ -25,6 +25,10 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
     const result = reviewResults[currentIndex];
     const errorCount = results.filter(isQuestionIncorrect).length;
     const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+    const [animState, setAnimState] = useState<'idle' | 'exiting' | 'entering'>('idle');
+    const [slideDirection, setSlideDirection] = useState<'left' | 'right'>('left');
+    const isTransitioning = React.useRef(false);
+    const TRANSITION_MS = 300;
 
     // Find the muscle data for the current question to render the image
     const muscle = result ? muscleData.find(m => m.id === result.muscleId) || null : null;
@@ -32,13 +36,35 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
     const isFirst = currentIndex === 0;
     const isLast = currentIndex === total - 1;
 
+    const animateTransition = useCallback((direction: 'left' | 'right', updateIndex: () => void) => {
+        if (isTransitioning.current) return;
+        isTransitioning.current = true;
+        setSlideDirection(direction);
+        setAnimState('exiting');
+
+        setTimeout(() => {
+            updateIndex();
+            setSlideDirection(direction);
+            setAnimState('entering');
+
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    setAnimState('idle');
+                    isTransitioning.current = false;
+                });
+            });
+        }, TRANSITION_MS);
+    }, [TRANSITION_MS]);
+
     const handlePrev = useCallback(() => {
-        if (!isFirst) setCurrentIndex(prev => prev - 1);
-    }, [isFirst]);
+        if (isFirst) return;
+        animateTransition('right', () => setCurrentIndex(prev => prev - 1));
+    }, [isFirst, animateTransition]);
 
     const handleNext = useCallback(() => {
-        if (!isLast) setCurrentIndex(prev => prev + 1);
-    }, [isLast]);
+        if (isLast) return;
+        animateTransition('left', () => setCurrentIndex(prev => prev + 1));
+    }, [isLast, animateTransition]);
 
     const handleReviewModeChange = () => {
         setIsOnlyErrors(prev => !prev);
@@ -115,7 +141,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
             </header>
 
             {/* Main content — scrollable */}
-            <main className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
                 {errorCount > 0 && (
                     <button
                         type="button"
@@ -132,6 +158,15 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                     </button>
                 )}
 
+                <div
+                    className={`w-full flex flex-col items-center gap-4 sm:gap-6 ${
+                        animState === 'exiting'
+                            ? `transition-all duration-300 ease-in opacity-0 ${slideDirection === 'left' ? '-translate-x-12' : 'translate-x-12'}`
+                            : animState === 'entering'
+                                ? `opacity-0 ${slideDirection === 'left' ? 'translate-x-12' : '-translate-x-12'}`
+                                : 'transition-all duration-300 ease-out opacity-100 translate-x-0'
+                    }`}
+                >
                 {/* Overall status badge */}
                 <div className={`inline-flex items-center gap-2 px-4 py-2 rounded-full text-xs sm:text-sm font-heading font-bold uppercase tracking-wider border
                     ${bothCorrect
@@ -156,7 +191,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                         type="button"
                         onClick={() => setIsZoomModalOpen(true)}
                         aria-label={`Ampliar imagens de ${muscle.name}`}
-                        className="group/review-image relative flex w-full max-w-4xl cursor-zoom-in items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-3xl transition-all duration-300 hover:border-white/30 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 sm:rounded-3xl sm:p-6"
+                        className="group/review-image relative flex w-full max-w-4xl cursor-zoom-in items-center justify-center rounded-2xl border border-white/10 bg-white/5 p-3 backdrop-blur-3xl transition-colors duration-300 hover:border-white/30 hover:bg-white/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-400/70 sm:rounded-3xl sm:p-6"
                     >
                         <span className="pointer-events-none absolute right-4 top-4 z-10 inline-flex items-center gap-2 rounded-full border border-white/10 bg-slate-950/70 px-3 py-2 text-xs font-heading font-semibold text-slate-300 opacity-0 transition-opacity duration-300 group-hover/review-image:opacity-100">
                             <ZoomIn className="h-3.5 w-3.5 text-blue-300" />
@@ -169,7 +204,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                 {/* Review cards */}
                 <div className="w-full max-w-2xl space-y-3 sm:space-y-4">
                     {/* Muscle answer review */}
-                    <div className={`rounded-2xl border p-4 sm:p-5 transition-all ${
+                    <div className={`rounded-2xl border p-4 sm:p-5 transition-colors ${
                         result.muscleCorrect
                             ? 'bg-emerald-500/5 border-emerald-500/30'
                             : 'bg-red-500/5 border-red-500/30'
@@ -213,7 +248,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                     </div>
 
                     {/* Accident answer review */}
-                    <div className={`rounded-2xl border p-4 sm:p-5 transition-all ${
+                    <div className={`rounded-2xl border p-4 sm:p-5 transition-colors ${
                         result.accidentCorrect
                             ? 'bg-emerald-500/5 border-emerald-500/30'
                             : 'bg-red-500/5 border-red-500/30'
@@ -295,6 +330,7 @@ export default function QuizReview({ results, onGoToAtlas, onBackToFeedback, ini
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                         </button>
                     )}
+                </div>
                 </div>
             </main>
             <ImageModal

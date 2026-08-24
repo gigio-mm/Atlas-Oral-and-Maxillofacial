@@ -17,6 +17,9 @@ const newsreader = Newsreader({
 export const metadata: Metadata = {
   title: "Atlas Bucomaxilo",
   description: "Atlas interativo de músculos e acidentes anatômicos da região bucomaxilofacial para estudo acadêmico.",
+  icons: {
+    icon: "/images/favicon.png",
+  },
 };
 
 export const viewport = {

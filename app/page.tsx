@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import AnatomyViewer from '@/components/AnatomyViewer';
 import CoverScreen from '@/components/CoverScreen';
 import QuizScreen from '@/components/QuizScreen';
@@ -42,8 +42,12 @@ function readStoredQuizResults(): QuestionResult[] {
 
 export default function Home() {
   const [screen, setScreen] = useState<AppScreen>('cover');
-  const [quizResults, setQuizResults] = useState<QuestionResult[]>(readStoredQuizResults);
+  const [quizResults, setQuizResults] = useState<QuestionResult[]>([]);
   const [reviewOnlyErrors, setReviewOnlyErrors] = useState(false);
+
+  useEffect(() => {
+    setQuizResults(readStoredQuizResults());
+  }, []);
 
   if (screen === 'cover') {
     return (
