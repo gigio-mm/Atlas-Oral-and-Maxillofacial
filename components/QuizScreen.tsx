@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useState, useMemo, useRef } from 'react';
+import React, { useState, useMemo, useRef, useCallback } from 'react';
 import { Check, X, ArrowRight, Send, Target } from 'lucide-react';
 import { muscleData } from '@/constants/muscleData';
 import type { QuestionResult } from '@/types/anatomy';
@@ -24,6 +24,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
     const [accidentCorrect, setAccidentCorrect] = useState(false);
     const [results, setResults] = useState<QuestionResult[]>([]);
     const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
+    const [animState, setAnimState] = useState<'idle' | 'exiting' | 'entering'>('idle');
     const isTransitioning = useRef(false);
 
     const currentQuestion = questions[currentIndex];
@@ -51,7 +52,9 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
         }]);
     };
 
-    const handleNext = () => {
+    const TRANSITION_MS = 300;
+
+    const handleNext = useCallback(() => {
         if (isTransitioning.current) return;
         isTransitioning.current = true;
 
@@ -60,16 +63,31 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
             onFinish(finalResults);
             return;
         }
-        setCurrentIndex(prev => prev + 1);
-        setMuscleAnswer('');
-        setAccidentAnswer('');
-        setHasSubmitted(false);
-        setMuscleCorrect(false);
-        setAccidentCorrect(false);
 
-        // Liberar transição após React processar o batch de state updates
-        setTimeout(() => { isTransitioning.current = false; }, 100);
-    };
+        // Phase 1: Exit — slide current question out to the left
+        setAnimState('exiting');
+
+        setTimeout(() => {
+            // Update question data while invisible
+            setCurrentIndex(prev => prev + 1);
+            setMuscleAnswer('');
+            setAccidentAnswer('');
+            setHasSubmitted(false);
+            setMuscleCorrect(false);
+            setAccidentCorrect(false);
+
+            // Phase 2: Position new question off-screen right (no transition)
+            setAnimState('entering');
+
+            // Phase 3: After a frame, transition to idle (slide in from right)
+            requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
+                    setAnimState('idle');
+                    isTransitioning.current = false;
+                });
+            });
+        }, TRANSITION_MS);
+    }, [isLastQuestion, results, onFinish]);
 
     const handleKeyDown = (e: React.KeyboardEvent) => {
         if (e.key === 'Enter' && !e.repeat) {
@@ -104,11 +122,20 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
             </header>
 
             {/* Main content — scrollable */}
-            <main className="flex-1 overflow-y-auto flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
+            <main className="flex-1 overflow-y-auto overflow-x-hidden flex flex-col items-center p-3 sm:p-6 gap-4 sm:gap-6">
+                <div
+                    className={`w-full flex flex-col items-center gap-4 sm:gap-6 ${
+                        animState === 'exiting'
+                            ? 'transition-all duration-300 ease-in opacity-0 -translate-x-12'
+                            : animState === 'entering'
+                                ? 'opacity-0 translate-x-12'
+                                : 'transition-all duration-300 ease-out opacity-100 translate-x-0'
+                    }`}
+                >
                 {/* Image viewer */}
                 <button
                     type="button"
-                    className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex flex-col items-center justify-center transition-all duration-300 hover:border-white/30 cursor-pointer relative group"
+                    className="w-full max-w-4xl bg-white/5 backdrop-blur-3xl border border-white/10 rounded-2xl sm:rounded-3xl p-3 sm:p-6 flex flex-col items-center justify-center transition-colors duration-300 hover:border-white/30 cursor-pointer relative group"
                     onClick={() => setIsZoomModalOpen(true)}
                     aria-label={`Ampliar imagens de ${currentQuestion.name}`}
                     title="Clique para ampliar"
@@ -229,6 +256,7 @@ export default function QuizScreen({ onFinish }: QuizScreenProps) {
                             <ArrowRight className="w-4 h-4 transition-transform duration-300 group-hover:translate-x-1" />
                         </button>
                     )}
+                </div>
                 </div>
             </main>
             <ImageModal
