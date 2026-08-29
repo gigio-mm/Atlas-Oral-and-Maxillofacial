@@ -18,7 +18,7 @@
 
 **Atlas Oral-Maxillofacial** is a web-based educational tool built for dentistry students and professionals who need a fast, interactive way to explore orofacial anatomy. This project was developed in collaboration with dentistry students who serve as academic monitors.
 
-Traditional anatomical study relies on static textbook images that lack interactivity and immediate feedback. This atlas solves that by providing **hover-triggered visual data** — allowing users to intuitively navigate through 25+ facial muscles and instantly see their associated anatomical accidents (bony landmarks), all within a polished dark-mode interface designed for lecture halls and self-study alike.
+Traditional anatomical study relies on static textbook images that lack interactivity and immediate feedback. This atlas solves that by providing **hover-triggered visual data**, allowing users to intuitively navigate through 25+ facial muscles and instantly see their associated anatomical accidents (bony landmarks), all within a polished dark-mode interface designed for lecture halls and self-study alike.
 
 ---
 
